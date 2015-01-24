@@ -111,24 +111,37 @@ public class GameState : MonoBehaviour {
         }
         return validMoves.ToArray();
     }
-    public void MoveCharacter(int oldX, int oldY, int newX, int newY)
+    public void MoveCharacter(Space space, int oldX, int oldY, int newX, int newY)
     {
-        Space character = this.Board[oldX, oldY];
+        Space oldSpace = this.Board[oldX, oldY];
         Space newSpace = this.Board[newX, newY];
-        if ((newSpace.Equals(Space.Enemy) || newSpace.Equals(Space.Player)) &&
-            (character.Equals(Space.Enemy) || character.Equals(Space.Player)))
+        oldSpace.Clear(space);
+        if (space.Equals(Space.Player))
         {
-            this.DidPlayerWin = false;
-            this.IsGameOver = true;
+            if (newSpace.IsSet(Space.Incinerator))
+            {
+                this.NumberOfEvidenceDestroyed++;
+                if (this.Score.Equals(this.TotalPossibleEvidencePieces))
+                {
+                    this.DidPlayerWin = true;
+                    this.IsGameOver = true;
+                }
+            }
+            if (newSpace.IsSet(Space.Enemy))
+            {
+                this.DidPlayerWin = false;
+                this.IsGameOver = true;
+            }
         }
-        else if (this.Score.Equals(this.TotalPossibleEvidencePieces))
+        else if (space.Equals(Space.Enemy))
         {
-            this.DidPlayerWin = true;
-            this.IsGameOver = true;
+            if (newSpace.IsSet(Space.Player))
+            {
+                this.DidPlayerWin = false;
+                this.IsGameOver = true;
+            }
         }
-
-        this.Board[oldX, oldY] = Space.Blank;
-        this.Board[newX, newY] = character;
+        newSpace.Set(space);
     }
 
 	public void PlaceObjectOnBoard(Space objectType, int x, int y)

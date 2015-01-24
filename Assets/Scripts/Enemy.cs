@@ -67,7 +67,7 @@ public class Enemy : MonoBehaviour {
         {
             this.currentlyMoving = true;
             AnimateMove();
-            GameState.Instance.MoveCharacter(X, Y, (int)nextMove.Value.x, (int)nextMove.Value.y);
+            GameState.Instance.MoveCharacter(Space.Enemy, X, Y, (int)nextMove.Value.x, (int)nextMove.Value.y);
             this.currentlyMoving = false;
         }
 	}
