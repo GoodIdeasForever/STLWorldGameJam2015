@@ -11,6 +11,9 @@ public class Enemy : MonoBehaviour {
     public Direction FacingDirection { get; private set; }
     Direction currentMotionDirection;
     float movementStartTime;
+	AudioSource enemy;
+
+
 	// Use this for initialization
 	void Start () 
 	{
@@ -76,6 +79,7 @@ public class Enemy : MonoBehaviour {
         Vector2? nextMove = FindMove();
         if (nextMove.HasValue)
         {
+			enemy.Play();
             movementStartTime = Time.time;
             currentMotionDirection = DirectionExtentions.GetDirection(X, Y, (int)nextMove.Value.x, (int)nextMove.Value.y);
             this.currentlyMoving = true;
