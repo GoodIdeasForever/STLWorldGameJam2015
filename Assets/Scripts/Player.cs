@@ -15,7 +15,7 @@ public class Player : MonoBehaviour
 	Direction currentMotionDirection;
 	float movementStartTime;
 
-	const float controllerInputDeadzone = 0.3f;
+	const float controllerInputDeadzone = 0.15f;
 	
 	void Awake()
 	{
