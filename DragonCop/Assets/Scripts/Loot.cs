@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Level : MonoBehaviour {
+public class Loot : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {

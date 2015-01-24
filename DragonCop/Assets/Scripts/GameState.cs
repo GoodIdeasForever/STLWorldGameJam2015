@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class GameState : MonoBehaviour {
 #region Private Field
@@ -19,8 +20,18 @@ public class GameState : MonoBehaviour {
 	public int Height;
 	public int LevelNumber = 1;
 	public Space[][] Board;
+	
+	public List<Enemy> Enemies;
+	public List<Loot> Loot;
+	public List<Evidence> Evidence;
 #endregion
 
+	public GameState()
+	{
+		this.Enemies = new List<Enemy>();
+		this.Loot = new List<Loot>();
+		this.Evidence = new List<Evidence>();
+	}
 #region Properties
 	public static GameState Instance 
 	{
@@ -40,13 +51,14 @@ public class GameState : MonoBehaviour {
 	}
 #endregion
 #region Public Functions
-	public bool CanIMoveHere(Space piece, int x, int y)
+	public bool CanIMoveHere(int x, int y)
 	{
-		if (this.Board[x,y] == Space.Blank)
+		if (!this.Board[x][y].Equals(Space.Wall))
 			return true;
 		else 
 			return false;
 	}
+	
 #endregion
 
 	// Use this for initialization
@@ -69,5 +81,16 @@ public enum Space
 	Blank = 0x0,
 	Player = 0x2,
 	Enemy = 0x4,
-	Wall = 0x8
+	Wall = 0x8,
+	Evidence = 0x16,
+	Loot = 0x32,
+	Vault = 0x64,
+	Incinerator = 0x128
+}
+public enum Direction
+{
+	North = 0x0,
+	South = 0x2,
+	East = 0x4,
+	West = 0x8
 }
