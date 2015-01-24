@@ -158,19 +158,21 @@ public class GameState : MonoBehaviour {
     
 #endregion
 
-	// Use this for initialization
-	void Start () {
-		
+	void Awake()
+	{
+		if (null == _instance)
+		{
+			_instance = this;
+		}
 	}
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-	
-	void FixedUpdate() {
-	
-	}
+	void OnDestroy()
+	{
+		if (this == _instance)
+        {
+            _instance = null;
+        }
+    }
 }
 
 [System.Flags]
