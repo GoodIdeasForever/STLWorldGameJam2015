@@ -3,17 +3,30 @@ using System.Collections;
 
 public class BoardDisplay : MonoBehaviour {
 
+
+    private static GameState _instance = null;
+
     public float spaceHeight = 24f;
     public float spaceWidth = 32f;
 
-	// Use this for initialization
-	void Start () {
+    public static BoardDisplay Instance
+    {
+        get
+        {
+            if (_instance == null)
+                _instance = new BoardDisplay();
+            return _instance;
+        }
+    }
+
+	void Start () 
+    {
 	
 	}
 	
-	// Update is called once per frame
-	void Update () {
-	
+	void Update () 
+    {
+
 	}
 
     public Vector2 GridToWorldSpace(Vector2 gridSpace)
