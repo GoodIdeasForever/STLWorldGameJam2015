@@ -4,13 +4,14 @@ using System.Collections;
 public class Player : MonoBehaviour
 {
 	public float tileMovementDuration = 1.0f;
+	public AudioSource player;
 
 	public int gridX { get; private set; }
 	public int gridY { get; private set; }
 	public Vector2 gridSpacePosition { get { return new Vector2(gridX, gridY); } }
 	public bool HasItem { get; private set; }
 	public Direction FacingDirection { get; private set; }
-	AudioSource player;
+
 	bool currentlyMoving;
 	Direction currentMotionDirection;
 	float movementStartTime;
