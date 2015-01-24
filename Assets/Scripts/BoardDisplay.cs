@@ -31,14 +31,20 @@ public class BoardDisplay : MonoBehaviour {
         }
     }
 
-	void Start () 
-    {
-	
+	void Awake()
+	{
+		if (null == _instance)
+		{
+			_instance = this;
+		}
 	}
-	
-	void Update () 
-    {
 
+	void OnDestroy()
+	{
+		if (this == _instance)
+		{
+			_instance = null;
+		}
 	}
 
     public Vector2 GridToWorldSpace(Vector2 gridSpace)
