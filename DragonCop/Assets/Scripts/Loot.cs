@@ -2,6 +2,8 @@
 using System.Collections;
 
 public class Loot : MonoBehaviour {
+    public int X = 0;
+    public int Y = 0;
 
 	// Use this for initialization
 	void Start () {
