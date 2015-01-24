@@ -22,13 +22,33 @@ public class Enemy : MonoBehaviour {
         if (!_moving)
             Move();
 	}
+    int PrioritizeMoves(Vector2[] moves)
+    {
+        if (moves.Length.Equals(1))
+            return 0;
+        else
+        {
+            int answer = 0;
+            int accuracyNumber = Random.Range(0, 101);
+
+            if (GameState.Instance.PathfindingAccuracy <= accuracyNumber)
+            { // is chasing
+
+            }
+            else
+            {
+                answer = Random.Range(0, moves.Length);
+            }
+            return answer;
+        }
+    }
+
 	Vector2? FindMove()
 	{
         Vector2[] moves = GameState.Instance.GetPossibleMoves(X, Y);
         if (!moves.Length.Equals(0))
         {
-            int direction = Random.Range(0, moves.Length);
-            return moves[direction];
+            return moves[PrioritizeMoves(moves)];
         }
         return null;
 	}

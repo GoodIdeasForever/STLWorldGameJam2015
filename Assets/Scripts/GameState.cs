@@ -34,6 +34,8 @@ public class GameState : MonoBehaviour {
 		this.Loot = new List<Loot>();
 		this.Evidence = new List<Evidence>();
         this.Board = new Space[this.BoardWidth, this.BoardHeight];
+        this.IsGameOver = false;
+        this.DidPlayerWin = false;
 	}
 #region Properties
 	public static GameState Instance 
@@ -52,6 +54,16 @@ public class GameState : MonoBehaviour {
 			return this.TotalPossibleEvidencePieces - this.NumberOfEvidenceDestroyed;
 		}
 	}
+    public bool IsGameOver
+    {
+        get;
+        private set;
+    }
+    public bool DidPlayerWin
+    {
+        get;
+        private set;
+    }
 #endregion
 #region Public Functions
 	public bool CanIMoveHere(int x, int y)
@@ -90,9 +102,23 @@ public class GameState : MonoBehaviour {
     public void MoveCharacter(int oldX, int oldY, int newX, int newY)
     {
         Space character = this.Board[oldX, oldY];
+        Space newSpace = this.Board[newX, newY];
+        if ((newSpace.Equals(Space.Enemy) || newSpace.Equals(Space.Player)) &&
+            (character.Equals(Space.Enemy) || character.Equals(Space.Player)))
+        {
+            this.DidPlayerWin = false;
+            this.IsGameOver = true;
+        }
+        else if (this.Score.Equals(this.TotalPossibleEvidencePieces))
+        {
+            this.DidPlayerWin = true;
+            this.IsGameOver = true;
+        }
+
         this.Board[oldX, oldY] = Space.Blank;
         this.Board[newX, newY] = character;
     }
+    
 #endregion
 
 	// Use this for initialization
