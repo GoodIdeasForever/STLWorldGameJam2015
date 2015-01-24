@@ -91,7 +91,7 @@ public class Player : MonoBehaviour
 				gridX += currentMotionDirection.XMotion();
 				gridY += currentMotionDirection.YMotion();
 				transform.position = BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition);
-				GameState.Instance.MoveCharacter(oldGridX, oldGridY, gridX, gridY);
+				GameState.Instance.MoveCharacter(Space.Player, oldGridX, oldGridY, gridX, gridY);
 			}
 			else
 			{
