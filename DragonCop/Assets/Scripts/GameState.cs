@@ -19,7 +19,9 @@ public class GameState : MonoBehaviour {
 	public int Width;
 	public int Height;
 	public int LevelNumber = 1;
-	public Space[][] Board;
+    public int BoardWidth = 32;
+    public int BoardHeight = 24;
+	public Space[,] Board;
 	
 	public List<Enemy> Enemies;
 	public List<Loot> Loot;
@@ -31,6 +33,7 @@ public class GameState : MonoBehaviour {
 		this.Enemies = new List<Enemy>();
 		this.Loot = new List<Loot>();
 		this.Evidence = new List<Evidence>();
+        this.Board = new Space[this.BoardWidth, this.BoardHeight];
 	}
 #region Properties
 	public static GameState Instance 
@@ -53,7 +56,7 @@ public class GameState : MonoBehaviour {
 #region Public Functions
 	public bool CanIMoveHere(int x, int y)
 	{
-		if (!this.Board[x][y].Equals(Space.Wall))
+		if (!this.Board[x,y].Equals(Space.Wall))
 			return true;
 		else 
 			return false;
