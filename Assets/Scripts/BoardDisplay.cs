@@ -4,7 +4,7 @@ using System.Collections;
 public class BoardDisplay : MonoBehaviour {
 
 
-    private static GameState _instance = null;
+    private static BoardDisplay _instance = null;
 
     public float spaceHeight = 24f;
     public float spaceWidth = 32f;
