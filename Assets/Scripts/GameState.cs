@@ -153,6 +153,7 @@ public class GameState : MonoBehaviour {
 	}
 }
 
+[System.Flags]
 public enum Space
 {
 	Blank = 0x0,
@@ -188,10 +189,51 @@ public static class SpaceExtensions
 	}
 }
 
+[System.Flags]
 public enum Direction
 {
-	North = 0x0,
+	North = 0x1,
 	South = 0x2,
 	East = 0x4,
 	West = 0x8
+}
+
+public static class DirectionExtentions
+{
+	public static int XMotion(this Direction direction)
+	{
+		return ((int)(direction & Direction.East) >> 2) - ((int)(direction & Direction.West) >> 3);
+	}
+
+	public static int YMotion(this Direction direction)
+	{
+		return ((int)(direction & Direction.North)) - ((int)(direction & Direction.South) >> 1);
+    }
+
+	public static Vector2 WorldSpaceMotion(this Direction direction)
+	{
+		var motion = Vector2.zero;
+
+		if ((direction & Direction.North) != 0)
+		{
+			motion += Vector2.up;
+		}
+
+		if ((direction & Direction.South) != 0)
+		{
+			motion += -Vector2.up;
+        }
+        
+		if ((direction & Direction.East) != 0)
+		{
+			motion += Vector2.right;
+        }
+        
+		if ((direction & Direction.West) != 0)
+		{
+			motion += -Vector2.right;
+        }
+        
+        return motion;
+    }
 }

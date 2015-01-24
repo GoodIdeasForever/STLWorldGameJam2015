@@ -67,8 +67,8 @@ public class Player : MonoBehaviour
 
 	void Move(Direction movementDirection)
 	{
-		if (!GameState.Instance.CanIMoveHere(gridX + GetDirectionXMotion(movementDirection),
-		                                     gridY + GetDirectionXMotion(movementDirection)))
+		if (!GameState.Instance.CanIMoveHere(gridX + movementDirection.XMotion(),
+		                                     gridY + movementDirection.YMotion()))
 		{
 			return;
 		}
@@ -77,55 +77,7 @@ public class Player : MonoBehaviour
 		currentMotionDirection = movementDirection;
 		movementStartTime = Time.time;
 	}
-
-	int GetDirectionXMotion(Direction direction)
-	{
-		switch (direction)
-		{
-		case Direction.East:
-			return 1;
-		case Direction.North:
-			return 0;
-		case Direction.South:
-			return 0;
-		case Direction.West:
-			return -1;
-		}
-		return 0;
-	}
-
-	int GetDirectionYMotion(Direction direction)
-	{
-		switch (direction)
-		{
-		case Direction.East:
-			return 0;
-		case Direction.North:
-			return 1;
-		case Direction.South:
-			return -1;
-		case Direction.West:
-			return 0;
-		}
-		return 0;
-	}
-
-	Vector2 GetWorldSpaceMotion(Direction direction)
-	{
-		switch (direction)
-		{
-		case Direction.East:
-			return Vector2.right;
-		case Direction.North:
-			return Vector2.up;
-		case Direction.South:
-			return -Vector2.up;
-		case Direction.West:
-			return -Vector2.right;
-		}
-		return Vector2.one;
-	}
-
+	
 	void AnimateMove()
 	{
 		if (currentlyMoving)
@@ -134,13 +86,13 @@ public class Player : MonoBehaviour
 			if (t > 1)
 			{
 				currentlyMoving = false;
-				gridX += GetDirectionXMotion(currentMotionDirection);
-				gridY += GetDirectionYMotion(currentMotionDirection);
+				gridX += currentMotionDirection.XMotion();
+				gridY += currentMotionDirection.YMotion();
 				transform.position = BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition);
 			}
 			else
 			{
-				transform.position = Vector3.Lerp(BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition), BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition + GetWorldSpaceMotion(currentMotionDirection)), t);
+				transform.position = Vector3.Lerp(BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition), BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition + currentMotionDirection.WorldSpaceMotion()), t);
 			}
 		}
 	}
