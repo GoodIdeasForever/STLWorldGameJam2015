@@ -35,22 +35,30 @@ public class Enemy : MonoBehaviour {
     }
     int PrioritizeMoves(Vector2[] moves)
     {
-        if (moves.Length.Equals(1))
-            return 0;
-        else
-        {
-            int answer = 0;
-            int accuracyNumber = Random.Range(0, 101);
-
-            if (GameState.Instance.PathfindingAccuracy <= accuracyNumber)
-            { // is chasing
-                
-            }
-            else
-            {
-                answer = Random.Range(0, moves.Length);
-            }
-            return answer;
+		if (moves.Length.Equals(1))
+			return 0;
+		else
+		{
+			int answer = 0;
+			int accuracyNumber = Random.Range(0, 101);
+			float tempDistance;
+			if (GameState.Instance.PathfindingAccuracy <= accuracyNumber)
+			{ // is chasing
+				Vector2 target = GameState.Instance.Player.transform.position;
+				float distance = 1000;
+				
+				for(int i = 0; i < moves.Length; i++)
+				{
+					tempDistance = Vector2.Distance(moves[i], target);
+					if (tempDistance < distance)
+						answer = i;
+				}
+			}
+			else
+			{
+				answer = Random.Range(0, moves.Length);
+			}
+			return answer;
         }
     }
 
