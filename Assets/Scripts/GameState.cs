@@ -37,6 +37,13 @@ public class GameState : MonoBehaviour {
         this.Board = new Space[this.BoardWidth, this.BoardHeight];
         this.IsGameOver = false;
         this.DidPlayerWin = false;
+        for (int i = 0; i < this.BoardWidth; i++)
+        {
+            for (int j = 0; j < this.BoardHeight; j++)
+            {
+                this.Board[i, j] = Space.Blank;
+            }
+        }
 	}
 #region Properties
 	public static GameState Instance 
