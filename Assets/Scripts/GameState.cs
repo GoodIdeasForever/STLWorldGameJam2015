@@ -38,12 +38,16 @@ public class GameState : MonoBehaviour {
 #region Properties
 	public static GameState Instance 
 	{
-		get 
-		{ 
-			if (_instance == null)
-				_instance = new GameState();
-			return _instance; 	
-		}
+        get
+        {
+            if (_instance == null)
+            {
+                var tempInstance = new GameObject("GameState", new System.Type[] { typeof(GameState) });
+                _instance = tempInstance.GetComponent<GameState>();
+            }
+
+            return _instance;
+        }
 	}
 	public int Score 
 	{ 
