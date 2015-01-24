@@ -33,7 +33,7 @@ public class Enemy : MonoBehaviour {
 
             if (GameState.Instance.PathfindingAccuracy <= accuracyNumber)
             { // is chasing
-
+                
             }
             else
             {
