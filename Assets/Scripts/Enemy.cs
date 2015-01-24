@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Enemy : MonoBehaviour {
+public class Enemy : MonoBehaviour
+{
     public float tileMovementDuration = 1.0f;
+	public AudioSource enemy;
 
     public int X { get; private set; }
     public int Y { get; private set; }
@@ -11,7 +13,6 @@ public class Enemy : MonoBehaviour {
     public Direction FacingDirection { get; private set; }
     Direction currentMotionDirection;
     float movementStartTime;
-	AudioSource enemy;
 
 
 	// Use this for initialization
