@@ -3,14 +3,22 @@ using System.Collections;
 
 public class Enemy : MonoBehaviour {
 
-	public int X = 0;
-	public int Y = 0;
-    private bool _moving = false;
+    public int X { get; private set; }
+    public int Y { get; private set; }
+    public Vector2 gridSpacePosition { get { return new Vector2(X, Y); } }
+    private bool currentlyMoving = false;
+    public Direction FacingDirection { get; private set; }
 	// Use this for initialization
 	void Start () 
 	{
 		
 	}
+
+    void Awake()
+    {
+        FacingDirection = Direction.South;
+        currentlyMoving = false;
+    }
 	
 	// Update is called once per frame
 	void Update () 
@@ -19,7 +27,7 @@ public class Enemy : MonoBehaviour {
 	}
 	void FixedUpdate() 
 	{
-        if (!_moving)
+        if (!currentlyMoving)
             Move();
 	}
     int PrioritizeMoves(Vector2[] moves)
@@ -57,10 +65,10 @@ public class Enemy : MonoBehaviour {
         Vector2? nextMove = FindMove();
         if (nextMove.HasValue)
         {
-            this._moving = true;
+            this.currentlyMoving = true;
             AnimateMove();
             GameState.Instance.MoveCharacter(X, Y, (int)nextMove.Value.x, (int)nextMove.Value.y);
-            this._moving = false;
+            this.currentlyMoving = false;
         }
 	}
 	void AnimateMove()
