@@ -85,10 +85,13 @@ public class Player : MonoBehaviour
 			var t = (Time.time - movementStartTime) / tileMovementDuration;
 			if (t > 1)
 			{
+				var oldGridX = gridX;
+				var oldGridY = gridY;
 				currentlyMoving = false;
 				gridX += currentMotionDirection.XMotion();
 				gridY += currentMotionDirection.YMotion();
 				transform.position = BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition);
+				GameState.Instance.MoveCharacter(oldGridX, oldGridY, gridX, gridY);
 			}
 			else
 			{
