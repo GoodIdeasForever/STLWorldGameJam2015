@@ -5,7 +5,9 @@ public class Player : MonoBehaviour
 {
 	public float tileMovementDuration = 1.0f;
 
-	public Vector2 gridSpacePosition { get; private set; }
+	public int gridX { get; private set; }
+	public int gridY { get; private set; }
+	public Vector2 gridSpacePosition { get { return new Vector2(gridX, gridY); } }
 	public bool HasItem { get; private set; }
 	public Direction FacingDirection { get; private set; }
 
@@ -22,10 +24,12 @@ public class Player : MonoBehaviour
 		currentlyMoving = false;
 	}
 
-	public void SpawnAtGridPosition(Vector2 position)
+	public void SpawnAtGridPosition(int x, int y)
 	{
-		gridSpacePosition = position;
+		gridX = x;
+		gridY = y;
 		transform.position = BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition);
+		GameState.Instance.PlaceObjectOnBoard(Space.Player, gridX, gridY);
 	}
 
 	public void PickupItem()
@@ -63,11 +67,47 @@ public class Player : MonoBehaviour
 
 	void Move(Direction movementDirection)
 	{
-		// TODO: validate next tile works for motion
+		if (!GameState.Instance.CanIMoveHere(gridX + GetDirectionXMotion(movementDirection),
+		                                     gridY + GetDirectionXMotion(movementDirection)))
+		{
+			return;
+		}
 
 		currentlyMoving = true;
 		currentMotionDirection = movementDirection;
 		movementStartTime = Time.time;
+	}
+
+	int GetDirectionXMotion(Direction direction)
+	{
+		switch (direction)
+		{
+		case Direction.East:
+			return 1;
+		case Direction.North:
+			return 0;
+		case Direction.South:
+			return 0;
+		case Direction.West:
+			return -1;
+		}
+		return 0;
+	}
+
+	int GetDirectionYMotion(Direction direction)
+	{
+		switch (direction)
+		{
+		case Direction.East:
+			return 0;
+		case Direction.North:
+			return 1;
+		case Direction.South:
+			return -1;
+		case Direction.West:
+			return 0;
+		}
+		return 0;
 	}
 
 	Vector2 GetWorldSpaceMotion(Direction direction)
@@ -94,7 +134,8 @@ public class Player : MonoBehaviour
 			if (t > 1)
 			{
 				currentlyMoving = false;
-				gridSpacePosition += GetWorldSpaceMotion(currentMotionDirection);
+				gridX += GetDirectionXMotion(currentMotionDirection);
+				gridY += GetDirectionYMotion(currentMotionDirection);
 				transform.position = BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition);
 			}
 			else

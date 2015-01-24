@@ -123,6 +123,18 @@ public class GameState : MonoBehaviour {
         this.Board[oldX, oldY] = Space.Blank;
         this.Board[newX, newY] = character;
     }
+
+	public void PlaceObjectOnBoard(Space objectType, int x, int y)
+	{
+		if (this.Board[x, y].IsSet(Space.Wall))
+		{
+			this.Board[x, y].Set(objectType);
+		}
+		else
+		{
+			Debug.LogError("You can't put a thing there is a wall!");
+		}
+	}
     
 #endregion
 
@@ -152,6 +164,30 @@ public enum Space
 	Vault = 0x64,
 	Incinerator = 0x128
 }
+
+public static class SpaceExtensions 
+{
+	public static bool IsSet(this Space space, Space flags)
+	{
+		return (space & flags) == flags;
+	}
+	
+	public static bool IsNotSet(this Space space, Space flags)
+	{
+		return (space & (~flags)) == 0;
+	}
+	
+	public static Space Set(this Space space, Space flags)
+	{
+		return space | flags;
+	}
+	
+	public static Space Clear(this Space space, Space flags)
+	{
+		return space & (~flags);
+	}
+}
+
 public enum Direction
 {
 	North = 0x0,
