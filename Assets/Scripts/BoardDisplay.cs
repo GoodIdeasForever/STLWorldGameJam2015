@@ -13,9 +13,20 @@ public class BoardDisplay : MonoBehaviour {
     public Sprite blankSprite;
     public Sprite wallSprite;
     public Sprite incineratorSprite;
-    public BackgroundSpace[,] backgroundLayout;
+
+    
+    public BackgroundSpace[] backgroundLayoutEditor;
+    public int layoutHeight = 0;
+    public int layoutWidth = 0;
 
     public GameObject[,] backgroundSpaces;
+
+    public enum BackgroundSpace
+    {
+        Blank,
+        Wall,
+        Incinerator,
+    }
 
     public static BoardDisplay Instance
     {
@@ -37,6 +48,11 @@ public class BoardDisplay : MonoBehaviour {
 		{
 			_instance = this;
 		}
+		backgroundSpaces = new GameObject[layoutWidth,layoutHeight];
+	}
+	void Start () 
+    	{
+        	GenerateBoard();
 	}
 
 	void OnDestroy()
@@ -55,26 +71,36 @@ public class BoardDisplay : MonoBehaviour {
    [MenuItem("GameJam/GenerateBoard")]
     public void GenerateBoard()
     {
-        for (int i = 0; i < GameState.Instance.BoardWidth; i++)
+        for (int i = 0; i < layoutHeight; i++)
         {
-            for (int j = 0; j <GameState.Instance.BoardHeight; j++)
+            for (int j = 0; j < layoutWidth; j++)
             {
-                backgroundSpaces[i, j] = Instantiate(spaceDisplayPrefab, new Vector3(i * spaceWidth, j * spaceHeight), Quaternion.identity) as GameObject;
+                backgroundSpaces[j, i] = Instantiate(spaceDisplayPrefab, new Vector3(j * spaceWidth, i * spaceHeight), Quaternion.identity) as GameObject;
             }
         }
         UpdateDisplay();
     }
 
+    public BackgroundSpace GetSpaceType(Vector2 gridSpace)
+    {
+        if (gridSpace.x > layoutWidth || gridSpace.y > layoutHeight || gridSpace.x < 0 || gridSpace.y < 0)
+        {
+            Debug.LogWarning(string.Format("Invalid gridSpace {0}", gridSpace.ToString()));
+            return BackgroundSpace.Blank;
+        }
+        return backgroundLayoutEditor[(int)gridSpace.x + (int)gridSpace.y * layoutWidth];
+    }
+
     public void UpdateDisplay()
     {
-        for (int i = 0; i < GameState.Instance.BoardWidth; i++)
+        for (int i = 0; i < layoutHeight; i++)
         {
-            for (int j = 0; j < GameState.Instance.BoardHeight; j++)
+            for (int j = 0; j < layoutWidth; j++)
             {
-                var spriteRenderer = backgroundSpaces[i,j].GetComponent<SpriteRenderer>();
+                var spriteRenderer = backgroundSpaces[j,i].GetComponent<SpriteRenderer>();
                 if (spriteRenderer != null)
                 {
-                    switch ( backgroundLayout[i,j] )
+                    switch ( backgroundLayoutEditor[j + i * layoutWidth] )
                     {
                         case BackgroundSpace.Blank:
                             spriteRenderer.sprite = blankSprite;
@@ -86,7 +112,7 @@ public class BoardDisplay : MonoBehaviour {
                             spriteRenderer.sprite = incineratorSprite;
                             break;
                         default:
-                            Debug.LogWarning(string.Format("No sprite defined for background space type {0}", backgroundLayout[i, j].ToString()));
+                            Debug.LogWarning(string.Format("No sprite defined for background space type {0}", backgroundLayoutEditor[j + i * layoutWidth]));
                             break;
                     }
                 }
@@ -94,10 +120,6 @@ public class BoardDisplay : MonoBehaviour {
         }
     }
 
-    public enum BackgroundSpace
-    {
-        Blank,
-        Wall,
-        Incinerator,
-    }
+
+
 }
