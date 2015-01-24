@@ -5,15 +5,17 @@ public class Player : MonoBehaviour
 {
 	public float tileMovementDuration = 1.0f;
 
-	public Vector2 gridSpacePosition { get; private set; }
+	public int gridX { get; private set; }
+	public int gridY { get; private set; }
+	public Vector2 gridSpacePosition { get { return new Vector2(gridX, gridY); } }
 	public bool HasItem { get; private set; }
 	public Direction FacingDirection { get; private set; }
-
+	AudioSource player;
 	bool currentlyMoving;
 	Direction currentMotionDirection;
 	float movementStartTime;
 
-	const float controllerInputDeadzone = 0.3f;
+	const float controllerInputDeadzone = 0.15f;
 	
 	void Awake()
 	{
@@ -22,10 +24,12 @@ public class Player : MonoBehaviour
 		currentlyMoving = false;
 	}
 
-	public void SpawnAtGridPosition(Vector2 position)
+	public void SpawnAtGridPosition(int x, int y)
 	{
-		gridSpacePosition = position;
+		gridX = x;
+		gridY = y;
 		transform.position = BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition);
+		GameState.Instance.PlaceObjectOnBoard(Space.Player, gridX, gridY);
 	}
 
 	public void PickupItem()
@@ -63,29 +67,18 @@ public class Player : MonoBehaviour
 
 	void Move(Direction movementDirection)
 	{
-		// TODO: validate next tile works for motion
+		if (!GameState.Instance.CanIMoveHere(gridX + movementDirection.XMotion(),
+		                                     gridY + movementDirection.YMotion()))
+		{
+			return;
+		}
 
 		currentlyMoving = true;
 		currentMotionDirection = movementDirection;
 		movementStartTime = Time.time;
+		player.Play();
 	}
-
-	Vector2 GetWorldSpaceMotion(Direction direction)
-	{
-		switch (direction)
-		{
-		case Direction.East:
-			return Vector2.right;
-		case Direction.North:
-			return Vector2.up;
-		case Direction.South:
-			return -Vector2.up;
-		case Direction.West:
-			return -Vector2.right;
-		}
-		return Vector2.one;
-	}
-
+	
 	void AnimateMove()
 	{
 		if (currentlyMoving)
@@ -93,13 +86,17 @@ public class Player : MonoBehaviour
 			var t = (Time.time - movementStartTime) / tileMovementDuration;
 			if (t > 1)
 			{
+				var oldGridX = gridX;
+				var oldGridY = gridY;
 				currentlyMoving = false;
-				gridSpacePosition += GetWorldSpaceMotion(currentMotionDirection);
+				gridX += currentMotionDirection.XMotion();
+				gridY += currentMotionDirection.YMotion();
 				transform.position = BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition);
+				GameState.Instance.MoveCharacter(Space.Player, oldGridX, oldGridY, gridX, gridY);
 			}
 			else
 			{
-				transform.position = Vector3.Lerp(BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition), BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition + GetWorldSpaceMotion(currentMotionDirection)), t);
+				transform.position = Vector3.Lerp(BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition), BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition + currentMotionDirection.WorldSpaceMotion()), t);
 			}
 		}
 	}

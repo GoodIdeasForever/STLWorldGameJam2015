@@ -27,6 +27,8 @@ public class GameState : MonoBehaviour {
 	public List<Loot> Loot;
 	public List<Evidence> Evidence;
     public Player Player;
+	AudioSource levelup; 
+	AudioSource destroy;
 #endregion
 
 	public GameState()
@@ -37,6 +39,13 @@ public class GameState : MonoBehaviour {
         this.Board = new Space[this.BoardWidth, this.BoardHeight];
         this.IsGameOver = false;
         this.DidPlayerWin = false;
+        for (int i = 0; i < this.BoardWidth; i++)
+        {
+            for (int j = 0; j < this.BoardHeight; j++)
+            {
+                this.Board[i, j] = Space.Blank;
+            }
+        }
 	}
 #region Properties
 	public static GameState Instance 
@@ -104,43 +113,77 @@ public class GameState : MonoBehaviour {
         }
         return validMoves.ToArray();
     }
-    public void MoveCharacter(int oldX, int oldY, int newX, int newY)
+    public void MoveCharacter(Space space, int oldX, int oldY, int newX, int newY)
     {
-        Space character = this.Board[oldX, oldY];
+        Space oldSpace = this.Board[oldX, oldY];
         Space newSpace = this.Board[newX, newY];
-        if ((newSpace.Equals(Space.Enemy) || newSpace.Equals(Space.Player)) &&
-            (character.Equals(Space.Enemy) || character.Equals(Space.Player)))
+        oldSpace.Clear(space);
+        if (space.Equals(Space.Player))
         {
-            this.DidPlayerWin = false;
-            this.IsGameOver = true;
+            if (newSpace.IsSet(Space.Incinerator))
+            {
+				destroy.Play();
+                this.NumberOfEvidenceDestroyed++;
+                if (this.Score.Equals(this.TotalPossibleEvidencePieces))
+                {
+                    this.DidPlayerWin = true;
+                    this.IsGameOver = true;
+                }
+            }
+            if (newSpace.IsSet(Space.Enemy))
+            {
+                this.DidPlayerWin = false;
+                this.IsGameOver = true;
+            }
         }
-        else if (this.Score.Equals(this.TotalPossibleEvidencePieces))
+        else if (space.Equals(Space.Enemy))
         {
-            this.DidPlayerWin = true;
-            this.IsGameOver = true;
+            if (newSpace.IsSet(Space.Player))
+            {
+                this.DidPlayerWin = false;
+                this.IsGameOver = true;
+            }
         }
-
-        this.Board[oldX, oldY] = Space.Blank;
-        this.Board[newX, newY] = character;
+		if (this.DidPlayerWin = true && this.IsGameOver = true)
+		{
+			levelup.Play();
+		}
+		{
+        newSpace.Set(space);
     }
+
+	public void PlaceObjectOnBoard(Space objectType, int x, int y)
+	{
+		if (this.Board[x, y].IsSet(Space.Wall))
+		{
+			this.Board[x, y].Set(objectType);
+		}
+		else
+		{
+			Debug.LogError("You can't put a thing there is a wall!");
+		}
+	}
     
 #endregion
 
-	// Use this for initialization
-	void Start () {
-		
+	void Awake()
+	{
+		if (null == _instance)
+		{
+			_instance = this;
+		}
 	}
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-	
-	void FixedUpdate() {
-	
-	}
+	void OnDestroy()
+	{
+		if (this == _instance)
+        {
+            _instance = null;
+        }
+    }
 }
 
+[System.Flags]
 public enum Space
 {
 	Blank = 0x0,
@@ -152,10 +195,98 @@ public enum Space
 	Vault = 0x64,
 	Incinerator = 0x128
 }
+
+public static class SpaceExtensions 
+{
+	public static bool IsSet(this Space space, Space flags)
+	{
+		return (space & flags) == flags;
+	}
+	
+	public static bool IsNotSet(this Space space, Space flags)
+	{
+		return (space & (~flags)) == 0;
+	}
+	
+	public static Space Set(this Space space, Space flags)
+	{
+		return space | flags;
+	}
+	
+	public static Space Clear(this Space space, Space flags)
+	{
+		return space & (~flags);
+	}
+}
+
+[System.Flags]
 public enum Direction
 {
-	North = 0x0,
+	None = 0x0,
+	North = 0x1,
 	South = 0x2,
 	East = 0x4,
 	West = 0x8
+}
+
+public static class DirectionExtentions
+{
+	public static int XMotion(this Direction direction)
+	{
+		return ((int)(direction & Direction.East) >> 2) - ((int)(direction & Direction.West) >> 3);
+	}
+
+	public static int YMotion(this Direction direction)
+	{
+		return ((int)(direction & Direction.North)) - ((int)(direction & Direction.South) >> 1);
+    }
+
+	public static Vector2 WorldSpaceMotion(this Direction direction)
+	{
+		var motion = Vector2.zero;
+
+		if ((direction & Direction.North) != 0)
+		{
+			motion += Vector2.up;
+		}
+
+		if ((direction & Direction.South) != 0)
+		{
+			motion += -Vector2.up;
+        }
+        
+		if ((direction & Direction.East) != 0)
+		{
+			motion += Vector2.right;
+        }
+        
+		if ((direction & Direction.West) != 0)
+		{
+			motion += -Vector2.right;
+        }
+        
+        return motion;
+    }
+
+	public static Direction GetDirection(int startX, int startY, int endX, int endY)
+	{
+		Direction computedDirection = Direction.None;
+		if (endX > startX)
+		{
+			computedDirection |= Direction.East;
+		}
+		if (startX < endX)
+		{
+			computedDirection |= Direction.West;
+		}
+		if (endY > startY)
+		{
+			computedDirection |= Direction.North;
+		}
+		if (startY > endY)
+		{
+			computedDirection |= Direction.South;
+		}
+		return computedDirection;
+	}
 }

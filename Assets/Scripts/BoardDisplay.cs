@@ -42,19 +42,25 @@ public class BoardDisplay : MonoBehaviour {
         }
     }
 
-    void Awake()
-    {
-        backgroundSpaces = new GameObject[layoutWidth,layoutHeight];
-    }
-
-	void Start () 
-    {
-        GenerateBoard();
+	void Awake()
+	{
+		if (null == _instance)
+		{
+			_instance = this;
+		}
+		backgroundSpaces = new GameObject[layoutWidth,layoutHeight];
 	}
-	
-	void Update () 
-    {
+	void Start () 
+    	{
+        	GenerateBoard();
+	}
 
+	void OnDestroy()
+	{
+		if (this == _instance)
+		{
+			_instance = null;
+		}
 	}
 
     public Vector2 GridToWorldSpace(Vector2 gridSpace)
