@@ -26,6 +26,7 @@ public class GameState : MonoBehaviour {
 	public List<Enemy> Enemies;
 	public List<Loot> Loot;
 	public List<Evidence> Evidence;
+    public Player Player;
 #endregion
 
 	public GameState()
