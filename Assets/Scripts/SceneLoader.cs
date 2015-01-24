@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class TitleManager : MonoBehaviour {
+public class SceneLoader : MonoBehaviour {
 
 	public string SceneToLoad = "Main"; //Initialize this as the main scene in case of emergency I guess
 
@@ -18,4 +18,9 @@ public class TitleManager : MonoBehaviour {
 	public void LoadNewScene (string SceneToLoad) {
 		Application.LoadLevel(SceneToLoad);
 	}
+
+	public void ExitGame () {
+		Application.Quit ();
+	}
+
 }
