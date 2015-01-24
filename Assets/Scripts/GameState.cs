@@ -212,6 +212,7 @@ public static class SpaceExtensions
 [System.Flags]
 public enum Direction
 {
+	None = 0x0,
 	North = 0x1,
 	South = 0x2,
 	East = 0x4,
@@ -256,4 +257,26 @@ public static class DirectionExtentions
         
         return motion;
     }
+
+	public static Direction GetDirection(int startX, int startY, int endX, int endY)
+	{
+		Direction computedDirection = Direction.None;
+		if (endX > startX)
+		{
+			computedDirection |= Direction.East;
+		}
+		if (startX < endX)
+		{
+			computedDirection |= Direction.West;
+		}
+		if (endY > startY)
+		{
+			computedDirection |= Direction.North;
+		}
+		if (startY > endY)
+		{
+			computedDirection |= Direction.South;
+		}
+		return computedDirection;
+	}
 }
