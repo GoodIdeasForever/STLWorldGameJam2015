@@ -56,11 +56,37 @@ public class GameState : MonoBehaviour {
 #region Public Functions
 	public bool CanIMoveHere(int x, int y)
 	{
-		if (!this.Board[x,y].Equals(Space.Wall))
-			return true;
-		else 
-			return false;
+        if (x >= 0 && x < this.Width && y >= 0 && y < this.Height)
+        {
+            if (!this.Board[x, y].Equals(Space.Wall))
+                return true;
+            else
+                return false;
+        }
+        else 
+            return false;
 	}
+    public Vector2[] GetPossibleMoves(int x, int y)
+    {
+        List<Vector2> validMoves = new List<Vector2>();
+        if (this.CanIMoveHere(x, y + 1))
+        { // Can I Move North
+            validMoves.Add(new Vector2(x, y + 1));
+        }
+        else if (this.CanIMoveHere(x, y - 1))
+        { // Can I Move North
+            validMoves.Add(new Vector2(x, y - 1));
+        }
+        else if (this.CanIMoveHere(x + 1, y))
+        { // Can I Move North
+            validMoves.Add(new Vector2(x + 1, y));
+        }
+        else if (this.CanIMoveHere(x - 1, y))
+        { // Can I Move North
+            validMoves.Add(new Vector2(x - 1, y));
+        }
+        return validMoves.ToArray();
+    }
 	
 #endregion
 
