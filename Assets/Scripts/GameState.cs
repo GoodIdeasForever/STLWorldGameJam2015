@@ -87,7 +87,12 @@ public class GameState : MonoBehaviour {
         }
         return validMoves.ToArray();
     }
-	
+    public void MoveCharacter(int oldX, int oldY, int newX, int newY)
+    {
+        Space character = this.Board[oldX, oldY];
+        this.Board[oldX, oldY] = Space.Blank;
+        this.Board[newX, newY] = character;
+    }
 #endregion
 
 	// Use this for initialization

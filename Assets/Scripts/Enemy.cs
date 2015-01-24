@@ -19,7 +19,8 @@ public class Enemy : MonoBehaviour {
 	}
 	void FixedUpdate() 
 	{
-	
+        if (!_moving)
+            Move();
 	}
 	Vector2? FindMove()
 	{
@@ -33,10 +34,17 @@ public class Enemy : MonoBehaviour {
 	}
 	void Move()
 	{
-		
+        Vector2? nextMove = FindMove();
+        if (nextMove.HasValue)
+        {
+            this._moving = true;
+            AnimateMove();
+            GameState.Instance.MoveCharacter(X, Y, (int)nextMove.Value.x, (int)nextMove.Value.y);
+            this._moving = false;
+        }
 	}
 	void AnimateMove()
 	{
-	
+	    
 	}
 }
