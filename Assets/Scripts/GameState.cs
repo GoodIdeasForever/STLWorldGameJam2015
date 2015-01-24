@@ -27,6 +27,8 @@ public class GameState : MonoBehaviour {
 	public List<Loot> Loot;
 	public List<Evidence> Evidence;
     public Player Player;
+	AudioSource levelup; 
+	AudioSource destroy;
 #endregion
 
 	public GameState()
@@ -120,6 +122,7 @@ public class GameState : MonoBehaviour {
         {
             if (newSpace.IsSet(Space.Incinerator))
             {
+				destroy.Play();
                 this.NumberOfEvidenceDestroyed++;
                 if (this.Score.Equals(this.TotalPossibleEvidencePieces))
                 {
@@ -141,6 +144,11 @@ public class GameState : MonoBehaviour {
                 this.IsGameOver = true;
             }
         }
+		if (this.DidPlayerWin = true && this.IsGameOver = true)
+		{
+			levelup.Play();
+		}
+		{
         newSpace.Set(space);
     }
 
