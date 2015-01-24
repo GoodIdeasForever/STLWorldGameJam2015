@@ -1,7 +1,12 @@
-Temp/
-Obj/
-UnityGenerated/
-Library/
+*.pidb
+*.csproj
+*.unityproj
+*.sln
+*.userprefs
+[Bb]uilds/
+[Ll]ogs/
+# allow the biped scripts
+!Assets/3rd party Tools/Biped/Library
 #######
 # Git
 ######
@@ -54,8 +59,6 @@ local.properties
 *.suo
 *.user
 *.sln.docstates
-*.sln
-*.userprefs
 
 # Build results
 [Dd]ebug/
@@ -184,4 +187,5 @@ sysinfo.txt
 Rails/.idea/
 Assets/UnityVS/Editor/SyntaxTree.VisualStudio.Unity.Bridge.dll.meta
 Assets/UnityVS/Editor/SyntaxTree.VisualStudio.Unity.Messaging.dll.meta
+DragonCop/Library/metadata/
 *.csproj
