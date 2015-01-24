@@ -3,6 +3,8 @@ using System.Collections;
 
 public class CameraSizer : MonoBehaviour
 {
+	public int baseOrthographicSize = 25;
+	public int menuHeightPixels = 32;
 	Camera myCamera;
 	int screenWidth;
 	int screenHeight;
@@ -34,11 +36,14 @@ public class CameraSizer : MonoBehaviour
 		if (screenWidth < screenHeight * 4 / 3)
 		{
 			var effectiveHeight = (screenWidth * 3 + 3) / 4;
-			myCamera.orthographicSize = 25 * screenHeight / effectiveHeight;
+			myCamera.orthographicSize = baseOrthographicSize * screenHeight / effectiveHeight;
 		}
 		else
 		{
-			myCamera.orthographicSize = 25;
+			myCamera.orthographicSize = baseOrthographicSize;
 		}
+
+		var fractionOfScreenForMainDisplay = (float)(screenHeight - menuHeightPixels) / (float)screenHeight;
+		myCamera.rect = new Rect(0, 0, 1, fractionOfScreenForMainDisplay);
 	}
 }
