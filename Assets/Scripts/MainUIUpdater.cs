@@ -36,7 +36,7 @@ public class MainUIUpdater : MonoBehaviour
 			evidenceIcons[i].enabled = evidenceCount >= (i + 1);
 		}
 
-		timeRemainingText.text = string.Format("{0:D2}:{1:D2}", (int)(GameState.Instance.TimeTillEvidenceDrop / 60), (int)(GameState.Instance.TimeTillEvidenceDrop % 60));
+		timeRemainingText.text = string.Format("{0:D2}:{1:D2}", (int)(GameState.Instance.NextEvidenceDropTime / 60), (int)(GameState.Instance.NextEvidenceDropTime % 60));
 	}
 
 	void Start()

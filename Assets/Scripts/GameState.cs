@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class GameState : MonoBehaviour {
 #region Private Field
 	private static GameState _instance = null;
+	private float nextEvidenceDropTime;
 #endregion
 
 #region Public Fields
@@ -32,6 +33,7 @@ public class GameState : MonoBehaviour {
     public int FartLifeSpanInMilliseconds = 1000;
     public int CopSleepWhenOnFartInMilliseconds = 1000;
     public Dictionary<Vector2, System.DateTime> Farts = new Dictionary<Vector2, System.DateTime>();
+    public GameObject explosionPrefab;
 #endregion
 
 #region Properties
@@ -58,6 +60,10 @@ public class GameState : MonoBehaviour {
         get;
         private set;
     }
+	public float NextEvidenceDropTime
+	{
+		get { return Mathf.Max(nextEvidenceDropTime - Time.time, 0); }
+	}
 #endregion
 #region Public Functions
     public void DropFart(int x, int y)
@@ -146,13 +152,13 @@ public class GameState : MonoBehaviour {
             {
                 Player.ItemsInBack.Add(Space.Evidence);
 				DeleteEvidenceAt(newX, newY);
-				this.Board[newX, newY] = newSpace.Clear(Space.Evidence);
+				this.Board[newX, newY] = this.Board[newX, newY].Clear(Space.Evidence);
             }
             if (newSpace.IsSet(Space.Loot) && Player.ItemsInBack.Count < MaxNumberOfItemsInPack)
             {
                 Player.ItemsInBack.Add(Space.Loot);
 				DeleteLootAt(newX, newY);
-				this.Board[newX, newY] = newSpace.Clear(Space.Loot);
+				this.Board[newX, newY] = this.Board[newX, newY].Clear(Space.Loot);
             }
             if (newSpace.IsSet(Space.Enemy))
             {
@@ -175,7 +181,7 @@ public class GameState : MonoBehaviour {
 				StartCoroutine(LoadTitleScene());
             }
         }
-		this.Board[newX, newY] = newSpace.Set(space);
+		this.Board[newX, newY] = this.Board[newX, newY].Set(space);
     }
 
 	IEnumerator LoadNextLevel()
@@ -261,12 +267,28 @@ public class GameState : MonoBehaviour {
             {
                 RemoveFart((int)keyPair.Key.x, (int)keyPair.Key.y);
             }
+            else
+            {
+                GameObject.Instantiate(explosionPrefab, new Vector3(keyPair.Key.x, keyPair.Key.y, -10), Quaternion.identity);
+            }
         }
+
+		if (TimeTillEvidenceDrop > 0 && Time.time > nextEvidenceDropTime && !Board[Player.gridX, Player.gridY].IsSet(Space.Evidence))
+		{
+			nextEvidenceDropTime += TimeTillEvidenceDrop;
+
+			Evidence evidence = Instantiate(BoardDisplay.Instance.evidencePrefab) as Evidence;
+			evidence.SpawnAtGridPosition(Player.gridX, Player.gridY);
+		}
     }
 
     void Start()
     {
         BoardDisplay.Instance.GenerateBoard();
+		if (TimeTillEvidenceDrop > 0)
+		{
+			nextEvidenceDropTime = Time.time + TimeTillEvidenceDrop;
+		}
     }
 	
 	void OnDestroy()
