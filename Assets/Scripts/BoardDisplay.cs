@@ -81,7 +81,8 @@ public class BoardDisplay : MonoBehaviour {
         {
             for (int j = 0; j < layoutWidth; j++)
             {
-                backgroundSpaces[j, i] = Instantiate(spaceDisplayPrefab, new Vector3(j * spaceWidth, i * spaceHeight, 5), Quaternion.identity) as GameObject;
+                backgroundSpaces[j,i] = Instantiate(spaceDisplayPrefab, new Vector3(j * spaceWidth, i * spaceHeight, 5), Quaternion.identity) as GameObject;
+                backgroundSpaces[j, i].transform.SetParent(gameObject.transform);
             }
         }
         UpdateDisplay();
