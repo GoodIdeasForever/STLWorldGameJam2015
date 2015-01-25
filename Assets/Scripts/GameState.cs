@@ -159,6 +159,7 @@ public class GameState : MonoBehaviour {
 
 	IEnumerator LoadNextLevel()
 	{
+		Application.LoadLevelAdditive("LevelCompleteUI");
 		yield return new WaitForSeconds(5);
 		NextLevelTracker.instance.PlayNextGameLevel();
 	}
