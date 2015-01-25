@@ -70,7 +70,7 @@ public class GameState : MonoBehaviour {
 	{
         if (x >= 0 && x < this.Width && y >= 0 && y < this.Height)
         {
-            if (!this.Board[x, y].Equals(Space.Wall))
+            if (!this.Board[x, y].IsSet(Space.Wall))
                 return true;
             else
                 return false;
@@ -128,12 +128,14 @@ public class GameState : MonoBehaviour {
             if (newSpace.IsSet(Space.Evidence) && Player.ItemsInBack.Count < MaxNumberOfItemsInPack)
             {
                 Player.ItemsInBack.Add(Space.Evidence);
-                newSpace.Clear(Space.Evidence);
+				DeleteEvidenceAt(newX, newY);
+				this.Board[newX, newY] = newSpace.Clear(Space.Evidence);
             }
             if (newSpace.IsSet(Space.Loot) && Player.ItemsInBack.Count < MaxNumberOfItemsInPack)
             {
                 Player.ItemsInBack.Add(Space.Loot);
-                newSpace.Clear(Space.Loot);
+				DeleteLootAt(newX, newY);
+				this.Board[newX, newY] = newSpace.Clear(Space.Loot);
             }
             if (newSpace.IsSet(Space.Enemy))
             {
@@ -153,14 +155,14 @@ public class GameState : MonoBehaviour {
 		{
 			levelup.Play();
 		}
-        newSpace.Set(space);
+		this.Board[newX, newY] = newSpace.Set(space);
     }
 
 	public void PlaceObjectOnBoard(Space objectType, int x, int y)
 	{
-		if (this.Board[x, y].IsSet(Space.Wall))
+		if (!this.Board[x, y].IsSet(Space.Wall))
 		{
-			this.Board[x, y].Set(objectType);
+			this.Board[x, y] = this.Board[x, y].Set(objectType);
 		}
 		else
 		{
@@ -168,6 +170,31 @@ public class GameState : MonoBehaviour {
 		}
 	}
     
+	void DeleteEvidenceAt(int X, int Y)
+	{
+		for (int i = 0; i < Evidence.Count; ++i)
+		{
+			if (Evidence[i].gridX == X && Evidence[i].gridY == Y)
+			{
+				Destroy(Evidence[i].gameObject);
+				Evidence.RemoveAt(i);
+				return;
+			}
+		}
+	}
+
+	void DeleteLootAt(int X, int Y)
+	{
+		for (int i = 0; i < Loot.Count; ++i)
+		{
+			if (Loot[i].gridX == X && Loot[i].gridY == Y)
+			{
+				Destroy(Loot[i].gameObject);
+				Loot.RemoveAt(i);
+				return;
+			}
+		}
+	}
 #endregion
 
 	void Awake()
@@ -209,14 +236,14 @@ public class GameState : MonoBehaviour {
 [System.Flags]
 public enum Space
 {
-	Blank = 0x0,
-	Player = 0x2,
-	Enemy = 0x4,
-	Wall = 0x8,
-	Evidence = 0x16,
-	Loot = 0x32,
-	Vault = 0x64,
-	Incinerator = 0x128
+	Blank = 0,
+	Player = 2,
+	Enemy = 4,
+	Wall = 8,
+	Evidence = 16,
+	Loot = 32,
+	Vault = 64,
+	Incinerator = 128
 }
 
 public static class SpaceExtensions 

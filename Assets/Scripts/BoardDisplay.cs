@@ -81,7 +81,7 @@ public class BoardDisplay : MonoBehaviour {
         {
             for (int j = 0; j < layoutWidth; j++)
             {
-                backgroundSpaces[j, i] = Instantiate(spaceDisplayPrefab, new Vector3(j * spaceWidth, i * spaceHeight), Quaternion.identity) as GameObject;
+                backgroundSpaces[j, i] = Instantiate(spaceDisplayPrefab, new Vector3(j * spaceWidth, i * spaceHeight, 5), Quaternion.identity) as GameObject;
             }
         }
         UpdateDisplay();
@@ -132,6 +132,7 @@ public class BoardDisplay : MonoBehaviour {
                         case BackgroundSpace.PlayerSpawn:
                             Player player = Instantiate(playerPrefab) as Player;
                             player.SpawnAtGridPosition(j, i);
+							GameState.Instance.Player = player;
                             break;
                         default:
                             Debug.LogWarning(string.Format("No sprite defined for background space type {0}", backgroundLayoutEditor[j + i * layoutWidth]));

@@ -17,6 +17,7 @@ public class Player : MonoBehaviour
 	bool currentlyMoving;
 	Direction currentMotionDirection;
 	float movementStartTime;
+	Direction nextMovementDirection;
 
 	const float controllerInputDeadzone = 0.15f;
 	
@@ -37,19 +38,20 @@ public class Player : MonoBehaviour
 	
 	void Update()
 	{		
-		if (!currentlyMoving)
+		// Measure input axes and assign desired movement direction
+		if (Mathf.Abs(Input.GetAxis("Horizontal")) > controllerInputDeadzone
+		    && Mathf.Abs(Input.GetAxis("Horizontal")) >= Mathf.Abs(Input.GetAxis("Vertical")))
 		{
-			// Measure input axes and assign desired movement direction
-			if (Mathf.Abs(Input.GetAxis("Horizontal")) > controllerInputDeadzone
-			    && Mathf.Abs(Input.GetAxis("Horizontal")) >= Mathf.Abs(Input.GetAxis("Vertical")))
-			{
-				Move(Input.GetAxis("Horizontal") > 0 ? Direction.East : Direction.West);
-			}
-			else if (Mathf.Abs(Input.GetAxis("Vertical")) > controllerInputDeadzone
-			    && Mathf.Abs(Input.GetAxis("Vertical")) > Mathf.Abs(Input.GetAxis("Horizontal")))
-			{
-				Move(Input.GetAxis("Vertical") > 0 ? Direction.North : Direction.South);
-			}
+			Move(Input.GetAxis("Horizontal") > 0 ? Direction.East : Direction.West);
+		}
+		else if (Mathf.Abs(Input.GetAxis("Vertical")) > controllerInputDeadzone
+		    && Mathf.Abs(Input.GetAxis("Vertical")) > Mathf.Abs(Input.GetAxis("Horizontal")))
+		{
+			Move(Input.GetAxis("Vertical") > 0 ? Direction.North : Direction.South);
+		}
+		else
+		{
+			nextMovementDirection = Direction.None;
 		}
 	}
 
@@ -60,6 +62,17 @@ public class Player : MonoBehaviour
 
 	void Move(Direction movementDirection)
 	{
+		if (movementDirection == Direction.None)
+		{
+			return;
+		}
+
+		if (currentlyMoving)
+		{
+			nextMovementDirection = movementDirection;
+			return;
+		}
+
 		if (!GameState.Instance.CanIMoveHere(gridX + movementDirection.XMotion(),
 		                                     gridY + movementDirection.YMotion()))
 		{
@@ -86,6 +99,9 @@ public class Player : MonoBehaviour
 				gridY += currentMotionDirection.YMotion();
 				transform.position = BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition);
 				GameState.Instance.MoveCharacter(Space.Player, oldGridX, oldGridY, gridX, gridY);
+
+				Move(nextMovementDirection);
+				movementStartTime = Time.time - t + 1;
 			}
 			else
 			{

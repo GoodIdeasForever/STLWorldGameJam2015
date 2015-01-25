@@ -13,5 +13,6 @@ public class Evidence : MonoBehaviour
 		gridY = y;
 		transform.position = BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition);
 		GameState.Instance.PlaceObjectOnBoard(Space.Evidence, gridX, gridY);
+		GameState.Instance.Evidence.Add(this);
 	}
 }
