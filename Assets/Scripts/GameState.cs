@@ -33,7 +33,7 @@ public class GameState : MonoBehaviour {
     public int FartLifeSpanInMilliseconds = 1000;
     public int CopSleepWhenOnFartInMilliseconds = 1000;
     public Dictionary<Vector2, System.DateTime> Farts = new Dictionary<Vector2, System.DateTime>();
-    public GameObject explosionPrefab;
+    public GameObject fartPrefab;
 #endregion
 
 #region Properties
@@ -269,7 +269,8 @@ public class GameState : MonoBehaviour {
             }
             else
             {
-                GameObject.Instantiate(explosionPrefab, new Vector3(keyPair.Key.x, keyPair.Key.y, -10), Quaternion.identity);
+                Vector2 worldSpace = BoardDisplay.Instance.GridToWorldSpace(keyPair.Key);
+                GameObject.Instantiate(fartPrefab, new Vector3(worldSpace.x, worldSpace.y, 10), Quaternion.identity);
             }
         }
 
