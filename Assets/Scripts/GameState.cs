@@ -89,8 +89,12 @@ public class GameState : MonoBehaviour {
             }
         }
     }
-    public bool CanIMoveHere(int x, int y, Space invalidFlags = Space.Wall)
-	{
+    public bool CanIMoveHere(int x, int y)
+    {
+        return CanIMoveHere(x,y,Space.Wall);
+    }
+    public bool CanIMoveHere(int x, int y, Space invalidFlags)
+    {
         if ((x >= 0 && x < this.BoardWidth && y >= 0 && y < this.BoardHeight) && ((invalidFlags & this.Board[x, y]) == Space.Blank))
         {
             return true;
@@ -98,7 +102,11 @@ public class GameState : MonoBehaviour {
         else 
             return false;
 	}
-    public Vector2[] GetPossibleMoves(int x, int y, Space invalidFlags = Space.Wall)
+    public Vector2[] GetPossibleMoves(int x, int y)
+    {
+        return GetPossibleMoves(x, y, Space.Wall);
+    }
+    public Vector2[] GetPossibleMoves(int x, int y, Space invalidFlags)
     {
         List<Vector2> validMoves = new List<Vector2>();
         if (this.CanIMoveHere(x + 1, y, invalidFlags))
