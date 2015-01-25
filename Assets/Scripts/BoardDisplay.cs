@@ -18,6 +18,10 @@ public class BoardDisplay : MonoBehaviour {
     public Enemy enemyPrefab;
     public Evidence evidencePrefab;
 
+    public Sprite wallTop;
+    public Sprite wallFront;
+    public Sprite wallStore;
+
     
     public BackgroundSpace[] backgroundLayoutEditor;
     public int layoutHeight = 0;
@@ -140,6 +144,36 @@ public class BoardDisplay : MonoBehaviour {
                             break;
                     }
                 }
+            }
+        }
+        PlaceWallTiles();
+    }
+
+    public void PlaceWallTiles()
+    {
+        for (int i = 0; i < layoutHeight; i++)
+        {
+            for (int j = 0; j < layoutWidth; j++)
+            {
+                if (backgroundLayoutEditor[j + i * layoutWidth] == BackgroundSpace.Wall)
+                {
+                    var spriteRenderer = backgroundSpaces[j, i].GetComponent<SpriteRenderer>();
+
+                    if (i != 0 && j != 0 && j < (layoutWidth - 1) && backgroundLayoutEditor[j + (i - 1) * layoutWidth] != BackgroundSpace.Wall && backgroundLayoutEditor[j - 1 + i * layoutWidth] != BackgroundSpace.Wall && backgroundLayoutEditor[j + 1 + i  * layoutWidth] != BackgroundSpace.Wall)
+                    {
+                        spriteRenderer.sprite = wallStore;
+                    }
+                    else if ( i == 0 || backgroundLayoutEditor[j + (i - 1) * layoutWidth] != BackgroundSpace.Wall)
+                    {
+                        spriteRenderer.sprite = wallFront;
+                    }
+                    else
+                    {
+                        spriteRenderer.sprite = wallTop;
+                    }
+                    
+                }
+                
             }
         }
     }
