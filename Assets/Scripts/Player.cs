@@ -6,6 +6,13 @@ public class Player : MonoBehaviour
 {
 	public float tileMovementDuration = 1.0f;
 	public AudioSource player;
+	public SpriteRenderer sprite;
+
+	public Sprite[] upSprites;
+	public Sprite[] downSprites;
+	public Sprite[] rightSprites;
+	public Sprite[] leftSprites;
+	public float spriteFrameAdvanceTime;
 
 	public int gridX { get; private set; }
 	public int gridY { get; private set; }
@@ -17,6 +24,8 @@ public class Player : MonoBehaviour
 	bool currentlyMoving;
 	Direction currentMotionDirection;
 	float movementStartTime;
+	float nextSpriteFrameTime;
+	int currentSpriteFrameIndex;
 	Direction nextMovementDirection;
 
 	const float controllerInputDeadzone = 0.15f;
@@ -66,6 +75,11 @@ public class Player : MonoBehaviour
 		{
 			nextMovementDirection = Direction.None;
 		}
+
+		if (Input.GetButtonDown("Fire1") || Input.GetButtonDown("Jump"))
+		{
+			GameState.Instance.DropFart(gridX, gridY);
+		}
 	}
 
 	void LateUpdate()
@@ -100,6 +114,8 @@ public class Player : MonoBehaviour
 		currentlyMoving = true;
 		currentMotionDirection = movementDirection;
 		movementStartTime = Time.time;
+		SetPlayerSprite();
+		nextSpriteFrameTime = Time.time + spriteFrameAdvanceTime;
 		player.Play();
 	}
 	
@@ -125,6 +141,59 @@ public class Player : MonoBehaviour
 			{
 				transform.position = Vector3.Lerp(BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition), BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition + currentMotionDirection.WorldSpaceMotion()), t);
 			}
+
+			if (Time.time > nextSpriteFrameTime)
+			{
+				nextSpriteFrameTime += spriteFrameAdvanceTime;
+				NextPlayerSprite();
+			}
+		}
+	}
+
+	void SetPlayerSprite()
+	{
+		switch (currentMotionDirection)
+		{
+		case Direction.North:
+			currentSpriteFrameIndex = currentSpriteFrameIndex % upSprites.Length;
+			sprite.sprite = upSprites[currentSpriteFrameIndex];
+			break;
+		case Direction.South:
+			currentSpriteFrameIndex = currentSpriteFrameIndex % downSprites.Length;
+			sprite.sprite = downSprites[currentSpriteFrameIndex];
+			break;
+		case Direction.East:
+			currentSpriteFrameIndex = currentSpriteFrameIndex % rightSprites.Length;
+			sprite.sprite = rightSprites[currentSpriteFrameIndex];
+			break;
+		case Direction.West:
+			currentSpriteFrameIndex = currentSpriteFrameIndex % leftSprites.Length;
+			sprite.sprite = leftSprites[currentSpriteFrameIndex];
+			break;
+		}
+	}
+
+	void NextPlayerSprite()
+	{
+		++currentSpriteFrameIndex;
+		switch (currentMotionDirection)
+		{
+		case Direction.North:
+			currentSpriteFrameIndex = currentSpriteFrameIndex % upSprites.Length;
+			sprite.sprite = upSprites[currentSpriteFrameIndex];
+			break;
+		case Direction.South:
+			currentSpriteFrameIndex = currentSpriteFrameIndex % downSprites.Length;
+			sprite.sprite = downSprites[currentSpriteFrameIndex];
+			break;
+		case Direction.East:
+			currentSpriteFrameIndex = currentSpriteFrameIndex % rightSprites.Length;
+			sprite.sprite = rightSprites[currentSpriteFrameIndex];
+			break;
+		case Direction.West:
+			currentSpriteFrameIndex = currentSpriteFrameIndex % leftSprites.Length;
+			sprite.sprite = leftSprites[currentSpriteFrameIndex];
+			break;
 		}
 	}
 }
