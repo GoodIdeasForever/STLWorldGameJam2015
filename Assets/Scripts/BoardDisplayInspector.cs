@@ -64,11 +64,17 @@ public class BoardDisplayInspector : Editor
                     case 5:
                         GUI.color = Color.yellow;
                         break;
+                    case 6:
+                        GUI.color = Color.magenta;
+                        break;
+                    case 7:
+                        GUI.color = Color.cyan;
+                        break;
 
                 }
                 if (GUILayout.Button(""))
                 {
-                    if (spaceType < 5)
+                    if (spaceType < 7)
                     {
                         backgroundLayoutEditor.GetArrayElementAtIndex(j + i * layoutWidth.intValue).enumValueIndex++;
                     }

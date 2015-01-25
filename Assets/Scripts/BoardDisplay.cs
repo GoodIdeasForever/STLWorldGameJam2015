@@ -17,6 +17,8 @@ public class BoardDisplay : MonoBehaviour {
     public Player playerPrefab;
     public Enemy enemyPrefab;
     public Evidence evidencePrefab;
+    public Loot lootPrefab;
+    public Vault vaultPrefab;
 
     public Sprite wallTop;
     public Sprite wallFront;
@@ -36,7 +38,9 @@ public class BoardDisplay : MonoBehaviour {
         Incinerator,
         PlayerSpawn,
         EnemySpawn,
-        EvidencePlacement
+        EvidencePlacement,
+        Vault,
+        LootPlacement
     }
 
     public static BoardDisplay Instance
@@ -115,7 +119,6 @@ public class BoardDisplay : MonoBehaviour {
                     {
                         case BackgroundSpace.Blank:
                             spriteRenderer.sprite = blankSprite;
-                            //GameState.Instance.PlaceObjectOnBoard(Space.Blank, j, i);
                             break;
                         case BackgroundSpace.Wall:
                             spriteRenderer.sprite = wallSprite;
@@ -129,6 +132,14 @@ public class BoardDisplay : MonoBehaviour {
                         case BackgroundSpace.EvidencePlacement:
                             Evidence evidence = Instantiate(evidencePrefab) as Evidence;
                             evidence.SpawnAtGridPosition(j, i);
+                            break;
+                        case BackgroundSpace.LootPlacement:
+                            Loot loot = Instantiate(lootPrefab) as Loot;
+                            loot.SpawnAtGridPosition(j, i);
+                            break;
+                        case BackgroundSpace.Vault:
+                            Vault vault = Instantiate(vaultPrefab) as Vault;
+                            vault.SpawnAtGridPosition(j, i);
                             break;
                         case BackgroundSpace.EnemySpawn:
                             Enemy enemy = Instantiate(enemyPrefab) as Enemy;
