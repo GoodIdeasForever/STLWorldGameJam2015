@@ -33,22 +33,6 @@ public class GameState : MonoBehaviour {
 	public AudioSource destroy;
 #endregion
 
-	public GameState()
-	{
-		this.Enemies = new List<Enemy>();
-		this.Loot = new List<Loot>();
-		this.Evidence = new List<Evidence>();
-        this.Board = new Space[this.BoardWidth, this.BoardHeight];
-        this.IsGameOver = false;
-        this.DidPlayerWin = false;
-        for (int i = 0; i < this.BoardWidth; i++)
-        {
-            for (int j = 0; j < this.BoardHeight; j++)
-            {
-                this.Board[i, j] = Space.Blank;
-            }
-        }
-	}
 #region Properties
 	public static GameState Instance 
 	{
@@ -192,6 +176,20 @@ public class GameState : MonoBehaviour {
 		{
 			_instance = this;
 		}
+
+        this.Enemies = new List<Enemy>();
+        this.Loot = new List<Loot>();
+        this.Evidence = new List<Evidence>();
+        this.Board = new Space[this.BoardWidth, this.BoardHeight];
+        this.IsGameOver = false;
+        this.DidPlayerWin = false;
+        for (int i = 0; i < this.BoardWidth; i++)
+        {
+            for (int j = 0; j < this.BoardHeight; j++)
+            {
+                this.Board[i, j] = Space.Blank;
+            }
+        }
 	}
 
     void Start()

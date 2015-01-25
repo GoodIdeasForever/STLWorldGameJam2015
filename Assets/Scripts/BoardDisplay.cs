@@ -110,7 +110,7 @@ public class BoardDisplay : MonoBehaviour {
                     {
                         case BackgroundSpace.Blank:
                             spriteRenderer.sprite = blankSprite;
-                            GameState.Instance.PlaceObjectOnBoard(Space.Blank, j, i);
+                            //GameState.Instance.PlaceObjectOnBoard(Space.Blank, j, i);
                             break;
                         case BackgroundSpace.Wall:
                             spriteRenderer.sprite = wallSprite;
