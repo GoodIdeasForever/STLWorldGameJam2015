@@ -55,6 +55,15 @@ public class BoardDisplayInspector : Editor
                     case 2:
                         GUI.color = Color.red;
                         break;
+                    case 3:
+                        GUI.color = Color.green;
+                        break;
+                    case 4:
+                        GUI.color = Color.blue;
+                        break;
+                    case 5:
+                        GUI.color = Color.yellow;
+                        break;
 
                 }
                 if (GUILayout.Button(""))

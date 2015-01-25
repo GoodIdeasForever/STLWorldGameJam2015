@@ -13,6 +13,10 @@ public class BoardDisplay : MonoBehaviour {
     public Sprite blankSprite;
     public Sprite wallSprite;
     public Sprite incineratorSprite;
+    public Incinerator incineratorPrefab;
+    public Player playerPrefab;
+    public Enemy enemyPrefab;
+    public Evidence evidencePrefab;
 
     
     public BackgroundSpace[] backgroundLayoutEditor;
@@ -26,6 +30,9 @@ public class BoardDisplay : MonoBehaviour {
         Blank,
         Wall,
         Incinerator,
+        PlayerSpawn,
+        EnemySpawn,
+        EvidencePlacement
     }
 
     public static BoardDisplay Instance
@@ -52,7 +59,7 @@ public class BoardDisplay : MonoBehaviour {
 	}
 	void Start () 
     	{
-        	GenerateBoard();
+
 	}
 
 	void OnDestroy()
@@ -68,7 +75,6 @@ public class BoardDisplay : MonoBehaviour {
         return new Vector2(gridSpace.x * spaceWidth, gridSpace.y * spaceHeight);
     }
 
-   [MenuItem("GameJam/GenerateBoard")]
     public void GenerateBoard()
     {
         for (int i = 0; i < layoutHeight; i++)
@@ -104,12 +110,28 @@ public class BoardDisplay : MonoBehaviour {
                     {
                         case BackgroundSpace.Blank:
                             spriteRenderer.sprite = blankSprite;
+                            GameState.Instance.PlaceObjectOnBoard(Space.Blank, j, i);
                             break;
                         case BackgroundSpace.Wall:
                             spriteRenderer.sprite = wallSprite;
+                            GameState.Instance.PlaceObjectOnBoard(Space.Wall, j, i);
                             break;
                         case BackgroundSpace.Incinerator:
                             spriteRenderer.sprite = incineratorSprite;
+                            Incinerator incinerator = Instantiate(incineratorPrefab) as Incinerator;
+                            incinerator.SpawnAtGridPosition(j, i);
+                            break;
+                        case BackgroundSpace.EvidencePlacement:
+                            Evidence evidence = Instantiate(evidencePrefab) as Evidence;
+                            evidence.SpawnAtGridPosition(j, i);
+                            break;
+                        case BackgroundSpace.EnemySpawn:
+                            Enemy enemy = Instantiate(enemyPrefab) as Enemy;
+                            enemy.SpawnAtGridPosition(j, i);
+                            break;
+                        case BackgroundSpace.PlayerSpawn:
+                            Player player = Instantiate(playerPrefab) as Player;
+                            player.SpawnAtGridPosition(j, i);
                             break;
                         default:
                             Debug.LogWarning(string.Format("No sprite defined for background space type {0}", backgroundLayoutEditor[j + i * layoutWidth]));
