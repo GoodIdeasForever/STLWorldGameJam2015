@@ -6,6 +6,13 @@ public class Enemy : MonoBehaviour
 {
     public float tileMovementDuration = 1.0f;
 	public AudioSource enemy;
+	public SpriteRenderer sprite;
+	
+	public Sprite[] upSprites;
+	public Sprite[] downSprites;
+	public Sprite[] rightSprites;
+	public Sprite[] leftSprites;
+	public float spriteFrameAdvanceTime;
 
     public int X { get; private set; }
     public int Y { get; private set; }
@@ -14,7 +21,9 @@ public class Enemy : MonoBehaviour
     public Direction FacingDirection { get; private set; }
     Direction currentMotionDirection;
     float movementStartTime;
-    private int MillisecondsFrozenFor = 0;
+	float nextSpriteFrameTime;
+	int currentSpriteFrameIndex;
+	private int MillisecondsFrozenFor = 0;
     private System.DateTime enemyFrozenOn = System.DateTime.Now;
 
 	// Use this for initialization
@@ -140,6 +149,7 @@ public class Enemy : MonoBehaviour
         }
         return null;
 	}
+
 	void Move()
 	{
 		if (GameState.Instance.IsGameOver)
@@ -154,8 +164,11 @@ public class Enemy : MonoBehaviour
             movementStartTime = Time.time;
             currentMotionDirection = DirectionExtentions.GetDirection(X, Y, (int)nextMove.Value.x, (int)nextMove.Value.y);
             this.currentlyMoving = true;
-        }
+			SetEnemySprite();
+			nextSpriteFrameTime = Time.time + spriteFrameAdvanceTime;
+		}
 	}
+
 	void AnimateMove()
 	{
         if (currentlyMoving)
@@ -175,7 +188,13 @@ public class Enemy : MonoBehaviour
             {
                 transform.position = Vector3.Lerp(BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition), BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition + currentMotionDirection.WorldSpaceMotion()), t);
             }
-        }
+			
+			if (Time.time > nextSpriteFrameTime)
+			{
+				nextSpriteFrameTime += spriteFrameAdvanceTime;
+				NextEnemySprite();
+			}
+		}
 	}
 
 	public void SpawnAtGridPosition(int x, int y)
@@ -184,5 +203,52 @@ public class Enemy : MonoBehaviour
 		Y = y;
 		transform.position = BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition);
 		GameState.Instance.PlaceObjectOnBoard(Space.Enemy, X, Y);
+	}
+
+	void SetEnemySprite()
+	{
+		switch (currentMotionDirection)
+		{
+		case Direction.North:
+			currentSpriteFrameIndex = currentSpriteFrameIndex % upSprites.Length;
+			sprite.sprite = upSprites[currentSpriteFrameIndex];
+			break;
+		case Direction.South:
+			currentSpriteFrameIndex = currentSpriteFrameIndex % downSprites.Length;
+			sprite.sprite = downSprites[currentSpriteFrameIndex];
+			break;
+		case Direction.East:
+			currentSpriteFrameIndex = currentSpriteFrameIndex % rightSprites.Length;
+			sprite.sprite = rightSprites[currentSpriteFrameIndex];
+			break;
+		case Direction.West:
+			currentSpriteFrameIndex = currentSpriteFrameIndex % leftSprites.Length;
+			sprite.sprite = leftSprites[currentSpriteFrameIndex];
+			break;
+		}
+	}
+	
+	void NextEnemySprite()
+	{
+		++currentSpriteFrameIndex;
+		switch (currentMotionDirection)
+		{
+		case Direction.North:
+			currentSpriteFrameIndex = currentSpriteFrameIndex % upSprites.Length;
+			sprite.sprite = upSprites[currentSpriteFrameIndex];
+			break;
+		case Direction.South:
+			currentSpriteFrameIndex = currentSpriteFrameIndex % downSprites.Length;
+			sprite.sprite = downSprites[currentSpriteFrameIndex];
+			break;
+		case Direction.East:
+			currentSpriteFrameIndex = currentSpriteFrameIndex % rightSprites.Length;
+			sprite.sprite = rightSprites[currentSpriteFrameIndex];
+			break;
+		case Direction.West:
+			currentSpriteFrameIndex = currentSpriteFrameIndex % leftSprites.Length;
+			sprite.sprite = leftSprites[currentSpriteFrameIndex];
+			break;
+		}
 	}
 }
