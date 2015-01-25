@@ -160,7 +160,7 @@ public class Enemy : MonoBehaviour
         Vector2? nextMove = FindMove();
         if (nextMove.HasValue)
         {
-			enemy.Play();
+			//enemy.Play();
             movementStartTime = Time.time;
             currentMotionDirection = DirectionExtentions.GetDirection(X, Y, (int)nextMove.Value.x, (int)nextMove.Value.y);
             this.currentlyMoving = true;
