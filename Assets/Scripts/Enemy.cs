@@ -107,4 +107,12 @@ public class Enemy : MonoBehaviour
             }
         }
 	}
+
+	public void SpawnAtGridPosition(int x, int y)
+	{
+		X = x;
+		Y = y;
+		transform.position = BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition);
+		GameState.Instance.PlaceObjectOnBoard(Space.Enemy, X, Y);
+	}
 }
