@@ -166,7 +166,7 @@ public class GameState : MonoBehaviour {
 	IEnumerator LoadTitleScene()
 	{
 		yield return new WaitForSeconds(5);
-		Application.LoadLevel("TitleScene");
+		Application.LoadLevel("GameOver");
     }
 	
 	public void PlaceObjectOnBoard(Space objectType, int x, int y)
