@@ -29,8 +29,9 @@ public class GameState : MonoBehaviour {
 	public AudioSource destroy;
     public int MaxNumberOfFartsAllowedOnField = 1;
     public int NumberOfFartsOnField = 0;
-    public int FartLifeSpanInMilliseconds = 0;
+    public int FartLifeSpanInMilliseconds = 500;
     public int CopSleepWhenOnFartInMilliseconds = 500;
+    public Dictionary<Vector2, System.DateTime> Farts = new Dictionary<Vector2, System.DateTime>();
 #endregion
 
 #region Properties
@@ -63,6 +64,7 @@ public class GameState : MonoBehaviour {
     {
         if (this.NumberOfFartsOnField < this.MaxNumberOfFartsAllowedOnField)
         {
+            this.Farts[new Vector2(x, y)] = System.DateTime.Now;
 			this.Board[x, y] = this.Board[x, y].Set(Space.Fart);
 			this.NumberOfFartsOnField++;
         }
@@ -241,6 +243,17 @@ public class GameState : MonoBehaviour {
         }
 		Application.LoadLevelAdditive("PlayUI");
 	}
+
+    void Update()
+    {
+        foreach (KeyValuePair<Vector2, System.DateTime> keyPair in this.Farts)
+        {
+            if ((System.DateTime.Now - keyPair.Value).TotalMilliseconds >= FartLifeSpanInMilliseconds)
+            {
+                RemoveFart((int)keyPair.Key.x, (int)keyPair.Key.y);
+            }
+        }
+    }
 
     void Start()
     {
