@@ -154,6 +154,10 @@ public class GameState : MonoBehaviour {
             {
                 destroy.Play();
                 List<Space> loot = Player.ItemsInBack.FindAll(t => t == Space.Loot);
+                if (loot.Count > 0)
+                {
+                    BoardDisplay.Instance.lootPrefab.DisplayCollectEffect(newX, newY);
+                }
                 this.NumberOfLootCollected += loot.Count;
                 Player.ItemsInBack.RemoveAll(t => t == Space.Loot);
             }
