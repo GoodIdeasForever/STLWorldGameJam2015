@@ -22,9 +22,17 @@ public class NextLevelTracker : MonoBehaviour
 		}
 	}
 
+	void Update()
+	{
+		if (Input.GetKeyUp(KeyCode.J))
+		{
+			PlayNextGameLevel();
+		}
+	}
+
 	public void PlayNextGameLevel()
 	{
-		if (Application.loadedLevelName == "PreLevel")
+		if (Application.loadedLevelName == "PreLevel" || nextLevelNumber == 0)
 		{
 			Application.LoadLevel(nextLevelInfo.levelName);
 		}
