@@ -131,6 +131,11 @@ public class Enemy : MonoBehaviour
 	}
 	void Move()
 	{
+		if (GameState.Instance.IsGameOver)
+		{
+			return;
+		}
+
         Vector2? nextMove = FindMove();
         if (nextMove.HasValue)
         {
