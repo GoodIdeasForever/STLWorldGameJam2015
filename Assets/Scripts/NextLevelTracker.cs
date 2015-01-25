@@ -9,6 +9,8 @@ public class NextLevelInfo
 
 public class NextLevelTracker : MonoBehaviour
 {
+	public static NextLevelTracker instance;
+
 	public static NextLevelInfo nextLevelInfo;
 
 	public string nextLevelName;
@@ -16,10 +18,16 @@ public class NextLevelTracker : MonoBehaviour
 
 	void Awake()
 	{
+		instance = this;
 		if (!string.IsNullOrEmpty(nextLevelName))
 		{
 			nextLevelInfo = new NextLevelInfo() { levelName = nextLevelName, levelNumber = nextLevelNumber };
 		}
+	}
+
+	void OnDestroy()
+	{
+		instance = null;
 	}
 
 	void Update()

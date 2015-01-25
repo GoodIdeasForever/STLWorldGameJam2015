@@ -35,6 +35,19 @@ public class Player : MonoBehaviour
 		transform.position = BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition);
 		GameState.Instance.PlaceObjectOnBoard(Space.Player, gridX, gridY);
 	}
+
+	public int GetEvidenceCount()
+	{
+		int count = 0;
+		for (int i = 0; i < ItemsInBack.Count; ++i)
+		{
+			if (ItemsInBack[i] == Space.Evidence)
+			{
+				++count;
+			}
+		}
+		return count;
+	}
 	
 	void Update()
 	{		

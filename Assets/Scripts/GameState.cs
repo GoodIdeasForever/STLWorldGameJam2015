@@ -118,11 +118,13 @@ public class GameState : MonoBehaviour {
                 this.NumberOfLootCollected += loot.Count;
                 Player.ItemsInBack.RemoveAll(t => t == Space.Loot);
             }
-            if (this.Score.Equals(this.TotalPossibleEvidencePieces + this.TotalNumberOfLootPieces))
+            if (Evidence.Count == 0 && Player.GetEvidenceCount() == 0)
             {
                 this.DidPlayerWin = true;
                 this.IsGameOver = true;
-            }
+				levelup.Play();
+				StartCoroutine(LoadNextLevel());
+			}
             if (newSpace.IsSet(Space.Evidence) && Player.ItemsInBack.Count < MaxNumberOfItemsInPack)
             {
                 Player.ItemsInBack.Add(Space.Evidence);
@@ -149,13 +151,15 @@ public class GameState : MonoBehaviour {
                 this.IsGameOver = true;
             }
         }
-		if (this.DidPlayerWin == true && this.IsGameOver == true)
-		{
-			levelup.Play();
-		}
 		this.Board[newX, newY] = newSpace.Set(space);
     }
 
+	IEnumerator LoadNextLevel()
+	{
+		yield return new WaitForSeconds(5);
+		NextLevelTracker.instance.PlayNextGameLevel();
+	}
+	
 	public void PlaceObjectOnBoard(Space objectType, int x, int y)
 	{
 		if (!this.Board[x, y].IsSet(Space.Wall))
