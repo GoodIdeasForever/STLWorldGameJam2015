@@ -40,13 +40,6 @@ public class NextLevelTracker : MonoBehaviour
 
 	public void PlayNextGameLevel()
 	{
-		if (Application.loadedLevelName == "PreLevel" || nextLevelNumber == 0)
-		{
-			Application.LoadLevel(nextLevelInfo.levelName);
-		}
-		else
-		{
-			Application.LoadLevel("PreLevel");
-		}
+		Application.LoadLevel(nextLevelName);
 	}
 }
