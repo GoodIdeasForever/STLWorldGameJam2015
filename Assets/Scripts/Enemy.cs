@@ -77,6 +77,11 @@ public class Enemy : MonoBehaviour
         while (openSet.Count > 0)
         {
             Vector2 current = openSet[0]; ///////// GLARING DISASTER
+            for (int i=1; i< openSet.Count; i++)
+            {
+            	if (fScore[openSet[i]] < fScore[openSet[i-1]])
+            		current = openSet[i];
+            }
             if (current == goal)
                 return reconstruct_path(came_from, start, goal);
             openSet.Remove(current);
