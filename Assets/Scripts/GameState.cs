@@ -17,8 +17,6 @@ public class GameState : MonoBehaviour {
 	public int NumberOfEvidenceDestroyed = 0;
     public int TotalNumberOfLootPieces;
 	public int TotalPossibleEvidencePieces;
-	public int Width;
-	public int Height;
     public int MaxNumberOfItemsInPack = 1;
 	public int LevelNumber = 1;
     public int BoardWidth = 32;
@@ -68,7 +66,7 @@ public class GameState : MonoBehaviour {
 #region Public Functions
 	public bool CanIMoveHere(int x, int y)
 	{
-        if (x >= 0 && x < this.Width && y >= 0 && y < this.Height)
+        if (x >= 0 && x < this.BoardWidth && y >= 0 && y < this.BoardHeight)
         {
             if (!this.Board[x, y].IsSet(Space.Wall))
                 return true;
@@ -217,6 +215,8 @@ public class GameState : MonoBehaviour {
                 this.Board[i, j] = Space.Blank;
             }
         }
+
+		Application.LoadLevelAdditive("PlayUI");
 	}
 
     void Start()
