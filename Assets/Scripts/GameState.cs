@@ -79,14 +79,6 @@ public class GameState : MonoBehaviour {
     public Vector2[] GetPossibleMoves(int x, int y)
     {
         List<Vector2> validMoves = new List<Vector2>();
-        if (this.CanIMoveHere(x, y + 1))
-        { // Can I Move North
-            validMoves.Add(new Vector2(x, y + 1));
-        }
-        if (this.CanIMoveHere(x, y - 1))
-        { // Can I Move North
-            validMoves.Add(new Vector2(x, y - 1));
-        }
         if (this.CanIMoveHere(x + 1, y))
         { // Can I Move North
             validMoves.Add(new Vector2(x + 1, y));
@@ -95,6 +87,15 @@ public class GameState : MonoBehaviour {
         { // Can I Move North
             validMoves.Add(new Vector2(x - 1, y));
         }
+        if (this.CanIMoveHere(x, y + 1))
+        { // Can I Move North
+            validMoves.Add(new Vector2(x, y + 1));
+        }
+        if (this.CanIMoveHere(x, y - 1))
+        { // Can I Move North
+            validMoves.Add(new Vector2(x, y - 1));
+        }
+        
         return validMoves.ToArray();
     }
     public void MoveCharacter(Space space, int oldX, int oldY, int newX, int newY)
@@ -337,7 +338,7 @@ public static class DirectionExtentions
 		{
 			computedDirection |= Direction.East;
 		}
-		if (startX < endX)
+		if (startX > endX)
 		{
 			computedDirection |= Direction.West;
 		}
