@@ -27,10 +27,10 @@ public class GameState : MonoBehaviour {
     public Player Player;
 	public AudioSource levelup; 
 	public AudioSource destroy;
-    public int MaxNumberOfFartsAllowedOnField = 1;
+    public int MaxNumberOfFartsAllowedOnField = 500;
     public int NumberOfFartsOnField = 0;
-    public int FartLifeSpanInMilliseconds = 500;
-    public int CopSleepWhenOnFartInMilliseconds = 500;
+    public int FartLifeSpanInMilliseconds = 1000;
+    public int CopSleepWhenOnFartInMilliseconds = 1000;
     public Dictionary<Vector2, System.DateTime> Farts = new Dictionary<Vector2, System.DateTime>();
 #endregion
 
@@ -64,15 +64,24 @@ public class GameState : MonoBehaviour {
     {
         if (this.NumberOfFartsOnField < this.MaxNumberOfFartsAllowedOnField)
         {
-            this.Farts[new Vector2(x, y)] = System.DateTime.Now;
-			this.Board[x, y] = this.Board[x, y].Set(Space.Fart);
-			this.NumberOfFartsOnField++;
+            if (!this.Board[x, y].IsSet(Space.Fart))
+            {
+                this.Farts[new Vector2(x, y)] = System.DateTime.Now;
+                this.Board[x, y] = this.Board[x, y].Set(Space.Fart);
+                this.NumberOfFartsOnField++;
+            }
         }
     }
     public void RemoveFart(int x, int y)
     {
-        this.Board[x, y] = this.Board[x, y].Clear(Space.Fart);
-        this.NumberOfFartsOnField--;
+        if (this.NumberOfFartsOnField > 0)
+        {
+            if (this.Board[x, y].IsSet(Space.Fart))
+            {
+                this.Board[x, y] = this.Board[x, y].Clear(Space.Fart);
+                this.NumberOfFartsOnField--;
+            }
+        }
     }
     public bool CanIMoveHere(int x, int y, Space invalidFlags = Space.Wall)
 	{
