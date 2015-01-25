@@ -22,9 +22,18 @@ public class MainUIUpdater : MonoBehaviour
 
 	void Update()
 	{
+		var evidenceCount = GameState.Instance.Evidence.Count;
+		for (int i = 0; i < GameState.Instance.Player.ItemsInBack.Count; ++i)
+		{
+			if (GameState.Instance.Player.ItemsInBack[i] == Space.Evidence)
+			{
+				++evidenceCount;
+			}
+		}
+
 		for (int i = 0; i < evidenceIcons.Length; ++i)
 		{
-			evidenceIcons[i].enabled = GameState.Instance.Evidence.Count >= (i + 1);
+			evidenceIcons[i].enabled = evidenceCount >= (i + 1);
 		}
 
 		timeRemainingText.text = string.Format("{0:D2}:{1:D2}", (int)(GameState.Instance.TimeTillEvidenceDrop / 60), (int)(GameState.Instance.TimeTillEvidenceDrop % 60));
