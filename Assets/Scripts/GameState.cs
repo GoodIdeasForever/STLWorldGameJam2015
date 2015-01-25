@@ -216,7 +216,7 @@ public class GameState : MonoBehaviour {
 
 	IEnumerator LoadTitleScene()
 	{
-		yield return new WaitForSeconds(5);
+		yield return new WaitForSeconds(2);
 		Application.LoadLevel("GameOver");
     }
 	
