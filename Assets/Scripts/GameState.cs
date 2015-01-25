@@ -152,13 +152,13 @@ public class GameState : MonoBehaviour {
             {
                 Player.ItemsInBack.Add(Space.Evidence);
 				DeleteEvidenceAt(newX, newY);
-				this.Board[newX, newY] = newSpace.Clear(Space.Evidence);
+				this.Board[newX, newY] = this.Board[newX, newY].Clear(Space.Evidence);
             }
             if (newSpace.IsSet(Space.Loot) && Player.ItemsInBack.Count < MaxNumberOfItemsInPack)
             {
                 Player.ItemsInBack.Add(Space.Loot);
 				DeleteLootAt(newX, newY);
-				this.Board[newX, newY] = newSpace.Clear(Space.Loot);
+				this.Board[newX, newY] = this.Board[newX, newY].Clear(Space.Loot);
             }
             if (newSpace.IsSet(Space.Enemy))
             {
@@ -181,7 +181,7 @@ public class GameState : MonoBehaviour {
 				StartCoroutine(LoadTitleScene());
             }
         }
-		this.Board[newX, newY] = newSpace.Set(space);
+		this.Board[newX, newY] = this.Board[newX, newY].Set(space);
     }
 
 	IEnumerator LoadNextLevel()
