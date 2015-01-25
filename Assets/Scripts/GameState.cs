@@ -8,16 +8,14 @@ public class GameState : MonoBehaviour {
 #endregion
 
 #region Public Fields
-	public float SpeedOfPlayer;
+	public float SpeedOfPlayerMultiplier = 1;
 	public float TimeTillEvidenceDrop;
-	public float SpeedOfCop;
+	public float SpeedOfCopMultiplier = 1;
 	public float PathfindingAccuracy;
-	public int NumberOfCops;
     public int NumberOfLootCollected = 0;
 	public int NumberOfEvidenceDestroyed = 0;
-    public int TotalNumberOfLootPieces;
-	public int TotalPossibleEvidencePieces;
     public int MaxNumberOfItemsInPack = 1;
+    public int WeightCostPerItem = 0;
 	public int LevelNumber = 1;
     public int BoardWidth = 32;
     public int BoardHeight = 24;
@@ -44,13 +42,6 @@ public class GameState : MonoBehaviour {
 
             return _instance;
         }
-	}
-	public int Score 
-	{ 
-		get 
-		{
-			return this.TotalPossibleEvidencePieces - this.NumberOfEvidenceDestroyed + this.TotalNumberOfLootPieces - this.NumberOfLootCollected;
-		}
 	}
     public bool IsGameOver
     {

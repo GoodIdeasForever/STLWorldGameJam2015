@@ -107,7 +107,7 @@ public class Player : MonoBehaviour
 	{
 		if (currentlyMoving)
 		{
-			var t = (Time.time - movementStartTime) / tileMovementDuration;
+			var t = (Time.time - movementStartTime) / (tileMovementDuration + this.ItemsInBack.Count * GameState.Instance.WeightCostPerItem);
 			if (t > 1)
 			{
 				var oldGridX = gridX;
