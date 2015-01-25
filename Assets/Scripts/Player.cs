@@ -29,6 +29,8 @@ public class Player : MonoBehaviour
 	Direction nextMovementDirection;
 
 	const float controllerInputDeadzone = 0.15f;
+
+	bool soundStarted = false;
 	
 	void Awake()
 	{
@@ -61,15 +63,15 @@ public class Player : MonoBehaviour
 	void Update()
 	{		
 		// Measure input axes and assign desired movement direction
-		if (Mathf.Abs(Input.GetAxis("Horizontal")) > controllerInputDeadzone
-		    && Mathf.Abs(Input.GetAxis("Horizontal")) >= Mathf.Abs(Input.GetAxis("Vertical")))
+		if (Mathf.Abs(Input.GetAxisRaw("Horizontal")) > controllerInputDeadzone
+		    && Mathf.Abs(Input.GetAxisRaw("Horizontal")) >= Mathf.Abs(Input.GetAxisRaw("Vertical")))
 		{
-			Move(Input.GetAxis("Horizontal") > 0 ? Direction.East : Direction.West);
+			Move(Input.GetAxisRaw("Horizontal") > 0 ? Direction.East : Direction.West);
 		}
-		else if (Mathf.Abs(Input.GetAxis("Vertical")) > controllerInputDeadzone
-		    && Mathf.Abs(Input.GetAxis("Vertical")) > Mathf.Abs(Input.GetAxis("Horizontal")))
+		else if (Mathf.Abs(Input.GetAxisRaw("Vertical")) > controllerInputDeadzone
+		         && Mathf.Abs(Input.GetAxisRaw("Vertical")) > Mathf.Abs(Input.GetAxisRaw("Horizontal")))
 		{
-			Move(Input.GetAxis("Vertical") > 0 ? Direction.North : Direction.South);
+			Move(Input.GetAxisRaw("Vertical") > 0 ? Direction.North : Direction.South);
 		}
 		else
 		{
@@ -79,6 +81,17 @@ public class Player : MonoBehaviour
 		if (Input.GetButtonDown("Fire1") || Input.GetButtonDown("Jump"))
 		{
 			GameState.Instance.DropFart(gridX, gridY);
+		}
+
+		if(currentlyMoving && !soundStarted)
+		{
+			soundStarted = true;
+			player.Play();
+		}
+		if(!currentlyMoving)
+		{
+			soundStarted = false;
+			player.Pause();
 		}
 	}
 
