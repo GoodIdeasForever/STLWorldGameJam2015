@@ -83,15 +83,15 @@ public class GameState : MonoBehaviour {
         { // Can I Move North
             validMoves.Add(new Vector2(x, y + 1));
         }
-        else if (this.CanIMoveHere(x, y - 1))
+        if (this.CanIMoveHere(x, y - 1))
         { // Can I Move North
             validMoves.Add(new Vector2(x, y - 1));
         }
-        else if (this.CanIMoveHere(x + 1, y))
+        if (this.CanIMoveHere(x + 1, y))
         { // Can I Move North
             validMoves.Add(new Vector2(x + 1, y));
         }
-        else if (this.CanIMoveHere(x - 1, y))
+        if (this.CanIMoveHere(x - 1, y))
         { // Can I Move North
             validMoves.Add(new Vector2(x - 1, y));
         }
@@ -102,7 +102,7 @@ public class GameState : MonoBehaviour {
         Space oldSpace = this.Board[oldX, oldY];
         Space newSpace = this.Board[newX, newY];
         oldSpace.Clear(space);
-        if (space.Equals(Space.Player))
+        if (space.IsSet(Space.Player))
         {
             if (newSpace.IsSet(Space.Incinerator))
             {
@@ -141,7 +141,7 @@ public class GameState : MonoBehaviour {
                 this.IsGameOver = true;
             }
         }
-        else if (space.Equals(Space.Enemy))
+        else if (space.IsSet(Space.Enemy))
         {
             if (newSpace.IsSet(Space.Player))
             {
