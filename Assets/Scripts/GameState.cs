@@ -269,7 +269,8 @@ public class GameState : MonoBehaviour {
             }
             else
             {
-                GameObject.Instantiate(explosionPrefab, new Vector3(keyPair.Key.x, keyPair.Key.y, -10), Quaternion.identity);
+                Vector2 worldSpace = BoardDisplay.Instance.GridToWorldSpace(keyPair.Key);
+                GameObject.Instantiate(explosionPrefab, new Vector3(worldSpace.x, worldSpace.y, 10), Quaternion.identity);
             }
         }
 
