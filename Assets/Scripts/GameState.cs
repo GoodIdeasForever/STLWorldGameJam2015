@@ -273,14 +273,14 @@ public class GameState : MonoBehaviour {
 public enum Space
 {
 	Blank = 0,
-    Fart = 1,
 	Player = 2,
 	Enemy = 4,
 	Wall = 8,
 	Evidence = 16,
 	Loot = 32,
 	Vault = 64,
-	Incinerator = 128
+	Incinerator = 128,
+    Fart = 256
 }
 
 public static class SpaceExtensions 
