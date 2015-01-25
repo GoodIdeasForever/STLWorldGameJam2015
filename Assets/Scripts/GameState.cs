@@ -29,6 +29,7 @@ public class GameState : MonoBehaviour {
 	public AudioSource levelup; 
 	public AudioSource destroy;
 	public AudioSource stinkCloud;
+	public AudioSource death;
 
 	public int MaxNumberOfFartsAllowedOnField = 500;
     public int NumberOfFartsOnField = 0;
@@ -187,6 +188,7 @@ public class GameState : MonoBehaviour {
             {
                 this.DidPlayerWin = false;
                 this.IsGameOver = true;
+				death.Play();
 				StartCoroutine(LoadTitleScene());
             }
         }
