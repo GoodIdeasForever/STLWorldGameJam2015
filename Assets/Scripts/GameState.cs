@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public class GameState : MonoBehaviour {
 #region Private Field
 	private static GameState _instance = null;
+	private float nextEvidenceDropTime;
 #endregion
 
 #region Public Fields
@@ -58,6 +59,10 @@ public class GameState : MonoBehaviour {
         get;
         private set;
     }
+	public float NextEvidenceDropTime
+	{
+		get { return Mathf.Max(nextEvidenceDropTime - Time.time, 0); }
+	}
 #endregion
 #region Public Functions
     public void DropFart(int x, int y)
@@ -262,11 +267,23 @@ public class GameState : MonoBehaviour {
                 RemoveFart((int)keyPair.Key.x, (int)keyPair.Key.y);
             }
         }
+
+		if (TimeTillEvidenceDrop > 0 && Time.time > nextEvidenceDropTime && !Board[Player.gridX, Player.gridY].IsSet(Space.Evidence))
+		{
+			nextEvidenceDropTime += TimeTillEvidenceDrop;
+
+			Evidence evidence = Instantiate(BoardDisplay.Instance.evidencePrefab) as Evidence;
+			evidence.SpawnAtGridPosition(Player.gridX, Player.gridY);
+		}
     }
 
     void Start()
     {
         BoardDisplay.Instance.GenerateBoard();
+		if (TimeTillEvidenceDrop > 0)
+		{
+			nextEvidenceDropTime = Time.time + TimeTillEvidenceDrop;
+		}
     }
 	
 	void OnDestroy()
