@@ -172,6 +172,11 @@ public class GameState : MonoBehaviour {
 			_instance = this;
 		}
 	}
+
+    void Start()
+    {
+        BoardDisplay.Instance.GenerateBoard();
+    }
 	
 	void OnDestroy()
 	{
