@@ -28,7 +28,9 @@ public class GameState : MonoBehaviour {
     public Player Player;
 	public AudioSource levelup; 
 	public AudioSource destroy;
-    public int MaxNumberOfFartsAllowedOnField = 500;
+	public AudioSource stinkCloud;
+
+	public int MaxNumberOfFartsAllowedOnField = 500;
     public int NumberOfFartsOnField = 0;
     public int FartLifeSpanInMilliseconds = 1000;
     public int CopSleepWhenOnFartInMilliseconds = 1000;
@@ -74,7 +76,8 @@ public class GameState : MonoBehaviour {
             {
                 this.Farts[new Vector2(x, y)] = System.DateTime.Now;
                 this.Board[x, y] = this.Board[x, y].Set(Space.Fart);
-                this.NumberOfFartsOnField++;
+				stinkCloud.Play();
+				this.NumberOfFartsOnField++;
 
 				Vector2 worldSpace = BoardDisplay.Instance.GridToWorldSpace(new Vector2(x, y));
 				var fart = GameObject.Instantiate(fartPrefab, new Vector3(worldSpace.x, worldSpace.y, -5), Quaternion.identity) as GameObject;
@@ -154,6 +157,10 @@ public class GameState : MonoBehaviour {
             {
                 destroy.Play();
                 List<Space> loot = Player.ItemsInBack.FindAll(t => t == Space.Loot);
+                if (loot.Count > 0)
+                {
+                    BoardDisplay.Instance.lootPrefab.DisplayCollectEffect(newX, newY);
+                }
                 this.NumberOfLootCollected += loot.Count;
                 Player.ItemsInBack.RemoveAll(t => t == Space.Loot);
             }
@@ -300,7 +307,7 @@ public class GameState : MonoBehaviour {
 		{
 			nextEvidenceDropTime = Time.time + TimeTillEvidenceDrop;
 		}
-		StartCoroutine(LoadAdditive());
+		Application.LoadLevelAdditive("PlayUI");
 	}
 	
 	void OnDestroy()
@@ -310,14 +317,6 @@ public class GameState : MonoBehaviour {
             _instance = null;
         }
     }
-
-	IEnumerator LoadAdditive()
-	{
-//		yield return null;
-		Application.LoadLevelAdditive("PlayUI");
-		yield return null;
-//		Application.LoadLevelAdditive("PreLevel");
-	}
 }
 
 [System.Flags]
