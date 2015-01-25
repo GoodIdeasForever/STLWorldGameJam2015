@@ -3,6 +3,7 @@ using System.Collections;
 
 public class Evidence : MonoBehaviour
 {
+	public int zDepth = 5;
 	public int gridX { get; private set; }
 	public int gridY { get; private set; }
 	public Vector2 gridSpacePosition { get { return new Vector2(gridX, gridY); } }
@@ -12,6 +13,7 @@ public class Evidence : MonoBehaviour
 		gridX = x;
 		gridY = y;
 		transform.position = BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition);
+		transform.position = new Vector3(transform.position.x, transform.position.y, zDepth);
 		GameState.Instance.PlaceObjectOnBoard(Space.Evidence, gridX, gridY);
 		GameState.Instance.Evidence.Add(this);
 	}
