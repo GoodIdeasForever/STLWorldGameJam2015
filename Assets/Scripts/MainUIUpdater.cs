@@ -22,6 +22,8 @@ public class MainUIUpdater : MonoBehaviour
 
 	void Update()
 	{
+		if (null == GameState.Instance) return;
+
 		var evidenceCount = GameState.Instance.Evidence.Count;
 		for (int i = 0; i < GameState.Instance.Player.ItemsInBack.Count; ++i)
 		{

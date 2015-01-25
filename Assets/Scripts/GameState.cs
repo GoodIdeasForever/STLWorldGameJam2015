@@ -41,11 +41,11 @@ public class GameState : MonoBehaviour {
 	{
         get
         {
-            if (_instance == null)
-            {
-                var tempInstance = new GameObject("GameState", new System.Type[] { typeof(GameState) });
-                _instance = tempInstance.GetComponent<GameState>();
-            }
+//            if (_instance == null)
+//            {
+//                var tempInstance = new GameObject("GameState", new System.Type[] { typeof(GameState) });
+//                _instance = tempInstance.GetComponent<GameState>();
+//            }
 
             return _instance;
         }
@@ -75,7 +75,11 @@ public class GameState : MonoBehaviour {
                 this.Farts[new Vector2(x, y)] = System.DateTime.Now;
                 this.Board[x, y] = this.Board[x, y].Set(Space.Fart);
                 this.NumberOfFartsOnField++;
-            }
+
+				Vector2 worldSpace = BoardDisplay.Instance.GridToWorldSpace(new Vector2(x, y));
+				var fart = GameObject.Instantiate(fartPrefab, new Vector3(worldSpace.x, worldSpace.y, -5), Quaternion.identity) as GameObject;
+				Destroy(fart, FartLifeSpanInMilliseconds / 1000.0f);
+			}
         }
     }
     public void RemoveFart(int x, int y)
@@ -272,7 +276,6 @@ public class GameState : MonoBehaviour {
                 this.Board[i, j] = Space.Blank;
             }
         }
-		Application.LoadLevelAdditive("PlayUI");
 	}
 
     void Update()
@@ -282,12 +285,6 @@ public class GameState : MonoBehaviour {
             if ((System.DateTime.Now - keyPair.Value).TotalMilliseconds >= FartLifeSpanInMilliseconds)
             {
                 RemoveFart((int)keyPair.Key.x, (int)keyPair.Key.y);
-            }
-            else
-            {
-                Vector2 worldSpace = BoardDisplay.Instance.GridToWorldSpace(keyPair.Key);
-                var fart = GameObject.Instantiate(fartPrefab, new Vector3(worldSpace.x, worldSpace.y, 10), Quaternion.identity) as GameObject;
-				Destroy (fart, 6);
             }
         }
 
@@ -307,7 +304,8 @@ public class GameState : MonoBehaviour {
 		{
 			nextEvidenceDropTime = Time.time + TimeTillEvidenceDrop;
 		}
-    }
+		Application.LoadLevelAdditive("PlayUI");
+	}
 	
 	void OnDestroy()
 	{
