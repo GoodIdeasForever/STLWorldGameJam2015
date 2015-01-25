@@ -68,7 +68,7 @@ public class BoardDisplayInspector : Editor
                 }
                 if (GUILayout.Button(""))
                 {
-                    if (spaceType < 2)
+                    if (spaceType < 5)
                     {
                         backgroundLayoutEditor.GetArrayElementAtIndex(j + i * layoutWidth.intValue).enumValueIndex++;
                     }
