@@ -29,6 +29,8 @@ public class Player : MonoBehaviour
 	Direction nextMovementDirection;
 
 	const float controllerInputDeadzone = 0.15f;
+
+	bool soundStarted = false;
 	
 	void Awake()
 	{
@@ -79,6 +81,17 @@ public class Player : MonoBehaviour
 		if (Input.GetButtonDown("Fire1") || Input.GetButtonDown("Jump"))
 		{
 			GameState.Instance.DropFart(gridX, gridY);
+		}
+
+		if(currentlyMoving && !soundStarted)
+		{
+			soundStarted = true;
+			player.Play();
+		}
+		if(!currentlyMoving)
+		{
+			soundStarted = false;
+			player.Pause();
 		}
 	}
 
