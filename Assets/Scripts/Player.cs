@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Player : MonoBehaviour
 {
@@ -9,7 +10,8 @@ public class Player : MonoBehaviour
 	public int gridX { get; private set; }
 	public int gridY { get; private set; }
 	public Vector2 gridSpacePosition { get { return new Vector2(gridX, gridY); } }
-	public bool HasItem { get; private set; }
+    public bool HasItem { get { return this.ItemsInBack.Count > 0; } }
+    public List<Space> ItemsInBack { get; private set; }
 	public Direction FacingDirection { get; private set; }
 
 	bool currentlyMoving;
@@ -20,9 +22,9 @@ public class Player : MonoBehaviour
 	
 	void Awake()
 	{
-		HasItem = false;
 		FacingDirection = Direction.South;
 		currentlyMoving = false;
+        ItemsInBack = new List<Space>();
 	}
 
 	public void SpawnAtGridPosition(int x, int y)
@@ -31,16 +33,6 @@ public class Player : MonoBehaviour
 		gridY = y;
 		transform.position = BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition);
 		GameState.Instance.PlaceObjectOnBoard(Space.Player, gridX, gridY);
-	}
-
-	public void PickupItem()
-	{
-		HasItem = true;
-	}
-
-	public void DropItem()
-	{
-		HasItem = false;
 	}
 	
 	void Update()

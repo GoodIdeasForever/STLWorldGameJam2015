@@ -13,11 +13,13 @@ public class GameState : MonoBehaviour {
 	public float SpeedOfCop;
 	public float PathfindingAccuracy;
 	public int NumberOfCops;
-	public int NumberOfEvidencePieces;
+    public int NumberOfLootCollected = 0;
 	public int NumberOfEvidenceDestroyed = 0;
+    public int TotalNumberOfLootPieces;
 	public int TotalPossibleEvidencePieces;
 	public int Width;
 	public int Height;
+    public int MaxNumberOfItemsInPack = 1;
 	public int LevelNumber = 1;
     public int BoardWidth = 32;
     public int BoardHeight = 24;
@@ -65,7 +67,7 @@ public class GameState : MonoBehaviour {
 	{ 
 		get 
 		{
-			return this.TotalPossibleEvidencePieces - this.NumberOfEvidenceDestroyed;
+			return this.TotalPossibleEvidencePieces - this.NumberOfEvidenceDestroyed + this.TotalNumberOfLootPieces - this.NumberOfLootCollected;
 		}
 	}
     public bool IsGameOver
@@ -123,12 +125,31 @@ public class GameState : MonoBehaviour {
             if (newSpace.IsSet(Space.Incinerator))
             {
 				destroy.Play();
-                this.NumberOfEvidenceDestroyed++;
-                if (this.Score.Equals(this.TotalPossibleEvidencePieces))
-                {
-                    this.DidPlayerWin = true;
-                    this.IsGameOver = true;
-                }
+                List<Space> evidence = Player.ItemsInBack.FindAll(t => t == Space.Evidence);
+                this.NumberOfEvidenceDestroyed+= evidence.Count;
+                Player.ItemsInBack.RemoveAll(t => t == Space.Evidence);
+            }
+            if (newSpace.IsSet(Space.Vault))
+            {
+                destroy.Play();
+                List<Space> loot = Player.ItemsInBack.FindAll(t => t == Space.Loot);
+                this.NumberOfLootCollected += loot.Count;
+                Player.ItemsInBack.RemoveAll(t => t == Space.Loot);
+            }
+            if (this.Score.Equals(this.TotalPossibleEvidencePieces + this.TotalNumberOfLootPieces))
+            {
+                this.DidPlayerWin = true;
+                this.IsGameOver = true;
+            }
+            if (newSpace.IsSet(Space.Evidence) && Player.ItemsInBack.Count < MaxNumberOfItemsInPack)
+            {
+                Player.ItemsInBack.Add(Space.Evidence);
+                newSpace.Clear(Space.Evidence);
+            }
+            if (newSpace.IsSet(Space.Loot) && Player.ItemsInBack.Count < MaxNumberOfItemsInPack)
+            {
+                Player.ItemsInBack.Add(Space.Loot);
+                newSpace.Clear(Space.Loot);
             }
             if (newSpace.IsSet(Space.Enemy))
             {
