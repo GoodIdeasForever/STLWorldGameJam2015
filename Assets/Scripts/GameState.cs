@@ -300,7 +300,7 @@ public class GameState : MonoBehaviour {
 		{
 			nextEvidenceDropTime = Time.time + TimeTillEvidenceDrop;
 		}
-		StartCoroutine(LoadAdditive());
+		Application.LoadLevelAdditive("PlayUI");
 	}
 	
 	void OnDestroy()
@@ -310,14 +310,6 @@ public class GameState : MonoBehaviour {
             _instance = null;
         }
     }
-
-	IEnumerator LoadAdditive()
-	{
-//		yield return null;
-		Application.LoadLevelAdditive("PlayUI");
-		yield return null;
-//		Application.LoadLevelAdditive("PreLevel");
-	}
 }
 
 [System.Flags]
