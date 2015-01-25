@@ -51,7 +51,7 @@ public class Enemy : MonoBehaviour
                 List<Vector2> path = AStar(start, GameState.Instance.Player.gridSpacePosition);
                 if (path != null)
                 {
-                    answer = path[path.Count -2];
+                    answer = path[path.Count - 2];
                 }
 			}
 			return answer;
@@ -86,7 +86,7 @@ public class Enemy : MonoBehaviour
                 return reconstruct_path(came_from, start, goal);
             openSet.Remove(current);
             closedSet.Add(current);
-			Vector2[] neighbors = GameState.Instance.GetPossibleMoves((int)current.x, (int)current.y);
+			Vector2[] neighbors = GameState.Instance.GetPossibleMoves((int)current.x, (int)current.y, Space.Wall | Space.Enemy);
             foreach (Vector2 neighbor in neighbors)
             {
                 if (!closedSet.Contains(neighbor))
@@ -122,7 +122,7 @@ public class Enemy : MonoBehaviour
 
     Vector2? FindMove()
 	{
-        Vector2[] moves = GameState.Instance.GetPossibleMoves(X, Y);
+        Vector2[] moves = GameState.Instance.GetPossibleMoves(X, Y, Space.Wall | Space.Enemy);
         if (!moves.Length.Equals(0))
         {
             return PrioritizeMoves(new Vector2(X,Y), moves);

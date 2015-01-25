@@ -64,34 +64,31 @@ public class GameState : MonoBehaviour {
     }
 #endregion
 #region Public Functions
-	public bool CanIMoveHere(int x, int y)
+    public bool CanIMoveHere(int x, int y, Space invalidFlags = Space.Wall)
 	{
-        if (x >= 0 && x < this.BoardWidth && y >= 0 && y < this.BoardHeight)
+        if ((x >= 0 && x < this.BoardWidth && y >= 0 && y < this.BoardHeight) && ((invalidFlags & this.Board[x, y]) == Space.Blank))
         {
-            if (!this.Board[x, y].IsSet(Space.Wall))
-                return true;
-            else
-                return false;
+            return true;
         }
         else 
             return false;
 	}
-    public Vector2[] GetPossibleMoves(int x, int y)
+    public Vector2[] GetPossibleMoves(int x, int y, Space invalidFlags = Space.Wall)
     {
         List<Vector2> validMoves = new List<Vector2>();
-        if (this.CanIMoveHere(x + 1, y))
+        if (this.CanIMoveHere(x + 1, y, invalidFlags))
         { // Can I Move North
             validMoves.Add(new Vector2(x + 1, y));
         }
-        if (this.CanIMoveHere(x - 1, y))
+        if (this.CanIMoveHere(x - 1, y, invalidFlags))
         { // Can I Move North
             validMoves.Add(new Vector2(x - 1, y));
         }
-        if (this.CanIMoveHere(x, y + 1))
+        if (this.CanIMoveHere(x, y + 1, invalidFlags))
         { // Can I Move North
             validMoves.Add(new Vector2(x, y + 1));
         }
-        if (this.CanIMoveHere(x, y - 1))
+        if (this.CanIMoveHere(x, y - 1, invalidFlags))
         { // Can I Move North
             validMoves.Add(new Vector2(x, y - 1));
         }
