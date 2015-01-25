@@ -15,7 +15,7 @@ public class GameState : MonoBehaviour {
     public int NumberOfLootCollected = 0;
 	public int NumberOfEvidenceDestroyed = 0;
     public int MaxNumberOfItemsInPack = 1;
-    public int WeightCostPerItem = 0;
+    public float WeightCostPerItem = 0;
 	public int LevelNumber = 1;
     public int BoardWidth = 32;
     public int BoardHeight = 24;
