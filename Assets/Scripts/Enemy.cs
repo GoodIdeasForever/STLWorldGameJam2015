@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Enemy : MonoBehaviour
 {
@@ -37,41 +38,89 @@ public class Enemy : MonoBehaviour
     {
         AnimateMove();
     }
-    int PrioritizeMoves(Vector2[] moves)
+    Vector2 PrioritizeMoves(Vector2 start, Vector2[] moves)
     {
 		if (moves.Length.Equals(1))
-			return 0;
+			return moves[0];
 		else
 		{
-			int answer = 0;
+            Vector2 answer = moves[Random.Range(0, moves.Length)];
 			int accuracyNumber = Random.Range(0, 101);
-			float tempDistance;
 			if (GameState.Instance.PathfindingAccuracy <= accuracyNumber)
 			{ // is chasing
-				Vector2 target = GameState.Instance.Player.transform.position;
-				float distance = 1000;
-				
-				for(int i = 0; i < moves.Length; i++)
-				{
-					tempDistance = Vector2.Distance(moves[i], target);
-					if (tempDistance < distance)
-						answer = i;
-				}
-			}
-			else
-			{
-				answer = Random.Range(0, moves.Length);
+                List<Vector2> path = AStar(start, GameState.Instance.Player.gridSpacePosition);
+                if (path != null)
+                {
+                    answer = path[path.Count -2];
+                }
 			}
 			return answer;
         }
     }
 
-	Vector2? FindMove()
+    int GetLeastDistance(Vector2 point1, Vector2 point2)
+    {
+        return (int)(Mathf.Abs(point1.x - point2.x) + Mathf.Abs(point1.y - point2.y));
+    }
+    
+    List<Vector2> AStar(Vector2 start, Vector2 goal)
+    {
+        List<Vector2> closedSet = new List<Vector2>();
+        List<Vector2> openSet = new List<Vector2>() { start };
+        Dictionary<Vector2, Vector2> came_from = new Dictionary<Vector2, Vector2>();
+
+        Dictionary<Vector2, int> gScore = new Dictionary<Vector2, int>();
+        Dictionary<Vector2, int> fScore = new Dictionary<Vector2, int>();
+        gScore[start] = 0;
+        fScore[start] = gScore[start] + GetLeastDistance(start,goal);
+
+        while (openSet.Count > 0)
+        {
+            Vector2 current = openSet[0]; ///////// GLARING DISASTER
+            if (current == goal)
+                return reconstruct_path(came_from, start, goal);
+            openSet.Remove(current);
+            closedSet.Add(current);
+			Vector2[] neighbors = GameState.Instance.GetPossibleMoves((int)current.x, (int)current.y);
+            foreach (Vector2 neighbor in neighbors)
+            {
+                if (!closedSet.Contains(neighbor))
+                {
+                    int tenative_g_score = gScore[current] + GetLeastDistance(current, neighbor);
+
+                    if (!openSet.Contains(neighbor) || (gScore.ContainsKey(neighbor) ? tenative_g_score < gScore[neighbor] : false))
+                    {
+                        came_from[neighbor] = current;
+                        gScore[neighbor] = tenative_g_score;
+                        fScore[neighbor] = gScore[neighbor] + GetLeastDistance(neighbor, goal);
+                        if (!openSet.Contains(neighbor))
+                            openSet.Add(neighbor);
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    List<Vector2> reconstruct_path(Dictionary<Vector2, Vector2> came_from, Vector2 start, Vector2 current)
+    {
+        List<Vector2> totalPath = new List<Vector2>() { current };
+        while (current != start)
+        {
+        	Vector2 oldCurrent = current;
+            current = came_from[current];			
+			came_from.Remove(oldCurrent);
+            totalPath.Add(current);
+        }
+        return totalPath;
+    }
+
+    Vector2? FindMove()
 	{
         Vector2[] moves = GameState.Instance.GetPossibleMoves(X, Y);
         if (!moves.Length.Equals(0))
         {
-            return moves[PrioritizeMoves(moves)];
+            return PrioritizeMoves(new Vector2(X,Y), moves);
         }
         return null;
 	}
@@ -99,7 +148,7 @@ public class Enemy : MonoBehaviour
                 X += currentMotionDirection.XMotion();
                 Y += currentMotionDirection.YMotion();
                 transform.position = BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition);
-                GameState.Instance.MoveCharacter(Space.Player, oldGridX, oldGridY, X, Y);
+                GameState.Instance.MoveCharacter(Space.Enemy, oldGridX, oldGridY, X, Y);
             }
             else
             {
