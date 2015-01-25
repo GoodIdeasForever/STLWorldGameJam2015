@@ -43,7 +43,7 @@ public class CameraSizer : MonoBehaviour
 			myCamera.orthographicSize = baseOrthographicSize;
 		}
 
-		var fractionOfScreenForMainDisplay = (float)(screenHeight - menuHeightPixels) / (float)screenHeight;
+		var fractionOfScreenForMainDisplay = 0.95f;
 		myCamera.rect = new Rect(0, 0, 1, fractionOfScreenForMainDisplay);
 	}
 }

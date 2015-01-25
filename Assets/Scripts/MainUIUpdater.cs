@@ -4,9 +4,21 @@ using System.Collections;
 
 public class MainUIUpdater : MonoBehaviour
 {
+	static public MainUIUpdater Instance;
+
 	public Image[] evidenceIcons;
 	public Text timeRemainingText;
 	public Text levelNumber;
+
+	void Awake()
+	{
+		Instance = this;
+	}
+
+	void OnDestroy()
+	{
+		Instance = null;
+	}
 
 	void Update()
 	{
@@ -15,7 +27,7 @@ public class MainUIUpdater : MonoBehaviour
 			evidenceIcons[i].enabled = GameState.Instance.Evidence.Count >= (i + 1);
 		}
 
-		timeRemainingText.text = string.Format("{0:2N}:{1:2N}", GameState.Instance.TimeTillEvidenceDrop / 60, GameState.Instance.TimeTillEvidenceDrop % 60);
+		timeRemainingText.text = string.Format("{0:D2}:{1:D2}", (int)(GameState.Instance.TimeTillEvidenceDrop / 60), (int)(GameState.Instance.TimeTillEvidenceDrop % 60));
 	}
 
 	void Start()
