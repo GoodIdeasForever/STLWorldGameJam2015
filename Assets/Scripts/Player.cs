@@ -75,6 +75,11 @@ public class Player : MonoBehaviour
 
 	void Move(Direction movementDirection)
 	{
+		if (GameState.Instance.IsGameOver)
+		{
+			return;
+		}
+
 		if (movementDirection == Direction.None)
 		{
 			return;

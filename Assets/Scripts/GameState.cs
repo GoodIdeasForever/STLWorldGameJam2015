@@ -101,7 +101,7 @@ public class GameState : MonoBehaviour {
     {
         Space oldSpace = this.Board[oldX, oldY];
         Space newSpace = this.Board[newX, newY];
-        oldSpace.Clear(space);
+		this.Board[oldX, oldY] = oldSpace.Clear(space);
         if (space.IsSet(Space.Player))
         {
             if (newSpace.IsSet(Space.Incinerator))
@@ -141,6 +141,7 @@ public class GameState : MonoBehaviour {
             {
                 this.DidPlayerWin = false;
                 this.IsGameOver = true;
+				StartCoroutine(LoadTitleScene());
             }
         }
         else if (space.IsSet(Space.Enemy))
@@ -149,6 +150,7 @@ public class GameState : MonoBehaviour {
             {
                 this.DidPlayerWin = false;
                 this.IsGameOver = true;
+				StartCoroutine(LoadTitleScene());
             }
         }
 		this.Board[newX, newY] = newSpace.Set(space);
@@ -159,6 +161,12 @@ public class GameState : MonoBehaviour {
 		yield return new WaitForSeconds(5);
 		NextLevelTracker.instance.PlayNextGameLevel();
 	}
+
+	IEnumerator LoadTitleScene()
+	{
+		yield return new WaitForSeconds(5);
+		Application.LoadLevel("TitleScene");
+    }
 	
 	public void PlaceObjectOnBoard(Space objectType, int x, int y)
 	{
