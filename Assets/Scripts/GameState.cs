@@ -32,6 +32,7 @@ public class GameState : MonoBehaviour {
     public int FartLifeSpanInMilliseconds = 1000;
     public int CopSleepWhenOnFartInMilliseconds = 1000;
     public Dictionary<Vector2, System.DateTime> Farts = new Dictionary<Vector2, System.DateTime>();
+    public GameObject explosionPrefab;
 #endregion
 
 #region Properties
@@ -260,6 +261,10 @@ public class GameState : MonoBehaviour {
             if ((System.DateTime.Now - keyPair.Value).TotalMilliseconds >= FartLifeSpanInMilliseconds)
             {
                 RemoveFart((int)keyPair.Key.x, (int)keyPair.Key.y);
+            }
+            else
+            {
+                GameObject.Instantiate(explosionPrefab, new Vector3(keyPair.Key.x, keyPair.Key.y, -10), Quaternion.identity);
             }
         }
     }
