@@ -3,7 +3,7 @@ using System.Collections;
 
 public class Loot : MonoBehaviour
 {
-    GameObject collectionEffectPrefab;
+    public GameObject collectionEffectPrefab;
     public int zDepth = 5;
 	public int gridX;
 	public int gridY;
