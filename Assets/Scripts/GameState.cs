@@ -27,6 +27,10 @@ public class GameState : MonoBehaviour {
     public Player Player;
 	public AudioSource levelup; 
 	public AudioSource destroy;
+    public int MaxNumberOfFartsAllowedOnField = 1;
+    public int NumberOfFartsOnField = 0;
+    public int FartLifeSpanInMilliseconds = 0;
+    public int CopSleepWhenOnFartInMilliseconds = 500;
 #endregion
 
 #region Properties
@@ -55,6 +59,19 @@ public class GameState : MonoBehaviour {
     }
 #endregion
 #region Public Functions
+    public void DropFart(int x, int y)
+    {
+        if (this.NumberOfFartsOnField < this.MaxNumberOfFartsAllowedOnField)
+        {
+			this.Board[x, y] = this.Board[x, y].Set(Space.Fart);
+			this.NumberOfFartsOnField++;
+        }
+    }
+    public void RemoveFart(int x, int y)
+    {
+        this.Board[x, y] = this.Board[x, y].Clear(Space.Fart);
+        this.NumberOfFartsOnField--;
+    }
     public bool CanIMoveHere(int x, int y, Space invalidFlags = Space.Wall)
 	{
         if ((x >= 0 && x < this.BoardWidth && y >= 0 && y < this.BoardHeight) && ((invalidFlags & this.Board[x, y]) == Space.Blank))
@@ -86,7 +103,7 @@ public class GameState : MonoBehaviour {
         
         return validMoves.ToArray();
     }
-    public void MoveCharacter(Space space, int oldX, int oldY, int newX, int newY)
+    public void MoveCharacter(Space space, int oldX, int oldY, int newX, int newY, Object character)
     {
         Space oldSpace = this.Board[oldX, oldY];
         Space newSpace = this.Board[newX, newY];
@@ -135,7 +152,12 @@ public class GameState : MonoBehaviour {
         }
         else if (space.IsSet(Space.Enemy))
         {
-            if (newSpace.IsSet(Space.Player))
+            if (newSpace.IsSet(Space.Fart))
+            {
+                this.RemoveFart(newX, newY);
+                ((Enemy)character).FreezeEnemyFor(this.CopSleepWhenOnFartInMilliseconds);
+            }
+            else if (newSpace.IsSet(Space.Player))
             {
                 this.DidPlayerWin = false;
                 this.IsGameOver = true;
@@ -203,7 +225,7 @@ public class GameState : MonoBehaviour {
 		{
 			_instance = this;
 		}
-
+		
         this.Enemies = new List<Enemy>();
         this.Loot = new List<Loot>();
         this.Evidence = new List<Evidence>();
@@ -217,7 +239,6 @@ public class GameState : MonoBehaviour {
                 this.Board[i, j] = Space.Blank;
             }
         }
-
 		Application.LoadLevelAdditive("PlayUI");
 	}
 
@@ -239,6 +260,7 @@ public class GameState : MonoBehaviour {
 public enum Space
 {
 	Blank = 0,
+    Fart = 1,
 	Player = 2,
 	Enemy = 4,
 	Wall = 8,

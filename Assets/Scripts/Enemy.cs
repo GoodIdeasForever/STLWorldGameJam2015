@@ -14,7 +14,8 @@ public class Enemy : MonoBehaviour
     public Direction FacingDirection { get; private set; }
     Direction currentMotionDirection;
     float movementStartTime;
-
+    private int MillisecondsFrozenFor = 0;
+    private System.DateTime enemyFrozenOn = System.DateTime.Now;
 
 	// Use this for initialization
 	void Start () 
@@ -31,12 +32,22 @@ public class Enemy : MonoBehaviour
 	// Update is called once per frame
 	void Update () 
 	{
-        if (!currentlyMoving)
+        if (MillisecondsFrozenFor != 0)
+        {
+            if ((System.DateTime.Now - enemyFrozenOn).TotalMilliseconds >= MillisecondsFrozenFor)
+                MillisecondsFrozenFor = 0;
+        }
+        if (!currentlyMoving && MillisecondsFrozenFor == 0)
             Move();
 	}
     void LateUpdate()
     {
         AnimateMove();
+    }
+    public void FreezeEnemyFor(int milliseconds)
+    {
+        enemyFrozenOn = System.DateTime.Now;
+        MillisecondsFrozenFor = milliseconds; 
     }
     Vector2 PrioritizeMoves(Vector2 start, Vector2[] moves)
     {
@@ -154,11 +165,11 @@ public class Enemy : MonoBehaviour
             {
                 var oldGridX = X;
                 var oldGridY = Y;
-                currentlyMoving = false;
                 X += currentMotionDirection.XMotion();
                 Y += currentMotionDirection.YMotion();
                 transform.position = BoardDisplay.Instance.GridToWorldSpace(gridSpacePosition);
-                GameState.Instance.MoveCharacter(Space.Enemy, oldGridX, oldGridY, X, Y);
+                GameState.Instance.MoveCharacter(Space.Enemy, oldGridX, oldGridY, X, Y, this);
+                currentlyMoving = false;
             }
             else
             {
