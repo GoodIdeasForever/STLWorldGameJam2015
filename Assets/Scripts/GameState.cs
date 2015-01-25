@@ -131,6 +131,10 @@ public class GameState : MonoBehaviour {
             {
 				destroy.Play();
                 List<Space> evidence = Player.ItemsInBack.FindAll(t => t == Space.Evidence);
+				if (evidence.Count > 0)
+				{
+					BoardDisplay.Instance.evidencePrefab.DisplayBurnEffect(newX, newY);
+				}
                 this.NumberOfEvidenceDestroyed+= evidence.Count;
                 Player.ItemsInBack.RemoveAll(t => t == Space.Evidence);
             }
@@ -270,7 +274,8 @@ public class GameState : MonoBehaviour {
             else
             {
                 Vector2 worldSpace = BoardDisplay.Instance.GridToWorldSpace(keyPair.Key);
-                GameObject.Instantiate(fartPrefab, new Vector3(worldSpace.x, worldSpace.y, 10), Quaternion.identity);
+                var fart = GameObject.Instantiate(fartPrefab, new Vector3(worldSpace.x, worldSpace.y, 10), Quaternion.identity) as GameObject;
+				Destroy (fart, 6);
             }
         }
 
